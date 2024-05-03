@@ -14,6 +14,11 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
     [SerializeField] private List<PlayerData> _allPlayersData;
 
+    public PlayerData LocalPlayerData => GetMyPlayerData();
+
+
+
+
     private void Awake()
     {
         instance = this;
@@ -31,6 +36,7 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         EventsProvider.OnLeftRoom += ClearPlayersData;
 
         EventsProvider.OnLevelStart += OnLevelStart;
+        EventsProvider.OnLevelEnd += OnLevelEnd;
     }
 
 
@@ -44,7 +50,17 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.CurrentRoom.IsVisible = false;
+
+            foreach (PlayerData data in _allPlayersData)
+            {
+                data.ready = false;
+            }
         }
+    }
+
+    private void OnLevelEnd()
+    {
+        GameData.gameStage = Enums.ServerGameStage.camp;
     }
 
 
@@ -99,32 +115,37 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
     public void SetAllPlayersData(List<PlayerData > playersData) // for others
     {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        PlayerData localData = LocalPlayerData;
+
         _allPlayersData = playersData;
+
+        for (int i = 0; i < _allPlayersData.Count; i++)
+        {
+            if (LocalData.UserId == _allPlayersData[i].userId)
+            {
+                _allPlayersData[i] = localData;
+            }
+        }
+
         EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
     }
 
     public string GetPlayersDataForRPC()
     {
-        string result = string.Empty;
-
-        result = JsonUtility.ToJson(new PlayersDataRPC(_allPlayersData, GameData));
-
-        return result;
+        return JsonUtility.ToJson(new PlayersDataRPC(_allPlayersData, GameData));
     }
 
     public string GetMyHeroDataForRPC()
     {
-        string result = string.Empty;
-
-        result = JsonUtility.ToJson(new HeroDataRPC(LocalData.UserId, GetMyHeroData()));
-
-        return result;
+        return JsonUtility.ToJson(new HeroDataRPC(LocalData.UserId, GetMyHeroData()));
     }
 
-    public HeroData GetMyHeroData()
-    {
-        return GetMyPlayerData().heroData;
-    }
+   
 
     public void AskToUpdatePlayersData()
     {
@@ -158,7 +179,7 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
     public void SetLocalPlayerReady(bool value = true)
     {
-        GetMyPlayerData().ready = value;
+        LocalPlayerData.ready = value;
         EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
     }
 
@@ -203,9 +224,117 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
 
 
+    // to separate class TODO!!!!
 
-   
+    //inv
+    public HeroData GetMyHeroData()
+    {
+        return LocalPlayerData.heroData;
+    }
 
+    public bool IsEnoughMoney(int value)
+    {
+        return LocalPlayerData.heroData.Gold >= value;
+    }
+
+    public bool IsEnoughPlaceInInventory()
+    {
+        return LocalPlayerData.heroData.items.Count >= 10;
+    }
+
+    public void AddItem(int id)
+    {
+        LocalPlayerData.heroData.items.Add(new ItemSlot(id));
+        EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
+        EventsProvider.OnInventoryItemsChanged?.Invoke(LocalPlayerData.heroData.items);
+    }
+
+
+    //ability
+    public int GetActiveAbilityLevel(int id)
+    {
+        foreach (ActiveAbilityDataSlot data in LocalPlayerData.heroData.activeTalents)
+        {
+            if (data.Id == id)
+            {
+                return data.Level;
+            }
+        }
+
+        return 0;
+    }
+
+    public int GetPassiveAbilityLevel(int id)
+    {
+        foreach (PassiveAbilityDataSlot data in LocalPlayerData.heroData.PassiveAbilities)
+        {
+            if (data.Id == id)
+            {
+                return data.Level;
+            }
+        }
+
+        return 0;
+    }
+    public bool IsEnoughPointsToLearn(int value)
+    {
+        return LocalPlayerData.heroData.TalentPoints >= value;
+    }
+
+    public bool IsEnoughSlotsToLearn()
+    {
+        return LocalPlayerData.heroData.activeTalents.Count < 10;
+    }
+
+    public bool IsRequirementsFullfilled(ActiveAbility ability)
+    {
+        return true;
+    }
+
+    public void AddActiveAbility(int id)
+    {
+        int pointsCost = InfoProvider.instance.GetAbility(id).LevelInfo[GetActiveAbilityLevel(id)].RequiredPoints;
+
+        foreach (ActiveAbilityDataSlot slot in LocalPlayerData.heroData.activeTalents)
+        {
+            if(slot.Id == id)
+            {
+                slot.Level++;
+                LocalPlayerData.heroData.TalentPoints -= pointsCost;
+                EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
+                return;
+            }
+        }
+
+        LocalPlayerData.heroData.TalentPoints -= pointsCost;
+        LocalPlayerData.heroData.activeTalents.Add(new ActiveAbilityDataSlot(id, 1));
+        EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
+    }
+
+    public void AddPassiveAbility(int id)
+    {
+        PassiveAbility passive = InfoProvider.instance.GetPassive(id);
+
+        int pointsCost = passive.LevelInfo[GetPassiveAbilityLevel(id)].RequiredPoints;
+
+        foreach (PassiveAbilityDataSlot slot in LocalPlayerData.heroData.PassiveAbilities)
+        {
+            if (slot.Id == id)
+            {
+                slot.Level++;
+                LocalPlayerData.heroData.TalentPoints -= pointsCost;
+                EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
+                return;
+            }
+        }
+
+        LocalPlayerData.heroData.TalentPoints -= pointsCost;
+        LocalPlayerData.heroData.PassiveAbilities.Add(new PassiveAbilityDataSlot(id, 1));
+        EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
+
+
+        EventsProvider.OnPassiveAbilityLearnt?.Invoke(passive);
+    }
 }
 
 
@@ -218,26 +347,42 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 [System.Serializable]
 public class HeroData
 {
-    public int level;
+    public int level = 1;
     public int classId;
-    public int raceId;
+    public int SubraceId;
     public int originId;
     public int startItemId;
 
+
+    public int Gold = 0;
+    public int TalentPoints = 0;
+    public List<ItemSlot> items; // change to slot class
+    public List<ActiveAbilityDataSlot> activeTalents; // change to slot class
+    public List<PassiveAbilityDataSlot> PassiveAbilities; // change to slot class
+
     public HeroData(int level, int classId, int raceId, int originId, int startItemId)
     {
+        items = new List<ItemSlot>();
+        activeTalents = new List<ActiveAbilityDataSlot>();
+        PassiveAbilities = new List<PassiveAbilityDataSlot>();
+
         this.level = level;
         this.classId = classId;
-        this.raceId = raceId;
+        this.SubraceId = raceId;
         this.originId = originId;
         this.startItemId = startItemId;
     }
 
     public HeroData()
     {
-        this.level = -1;
+        items = new List<ItemSlot>();
+        activeTalents = new List<ActiveAbilityDataSlot>();
+        PassiveAbilities = new List<PassiveAbilityDataSlot>();
+
+
+        this.level = 1;
         this.classId = -1;
-        this.raceId = -1;
+        this.SubraceId = -1;
         this.originId = -1;
         this.startItemId = -1;
     }
@@ -289,6 +434,7 @@ public class GameData
 
     public Enums.ServerGameStage gameStage = Enums.ServerGameStage.creatingHeroes;
     public string sceneName;
+    public int Level = 1;
 
 }
 
@@ -316,5 +462,46 @@ public class HeroDataRPC
     {
         this.UserId = UserId;
         this.heroData = heroData;
+    }
+}
+
+
+
+
+[System.Serializable]
+public class ItemSlot
+{
+    public int Id;
+
+    public ItemSlot(int id)
+    {
+        Id = id;
+    }
+}
+
+[System.Serializable]
+public class ActiveAbilityDataSlot
+{
+    public int Id;
+    public int Level;
+
+    public ActiveAbilityDataSlot(int id, int level)
+    {
+        Id = id;
+        Level = level;
+    }
+}
+
+
+[System.Serializable]
+public class PassiveAbilityDataSlot
+{
+    public int Id;
+    public int Level;
+
+    public PassiveAbilityDataSlot(int id, int level)
+    {
+        Id = id;
+        Level = level;
     }
 }

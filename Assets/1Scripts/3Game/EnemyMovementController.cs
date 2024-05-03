@@ -7,38 +7,76 @@ using UnityEngine.AI;
 public class EnemyMovementController : MonoBehaviour
 {
     public ITarget Target;
+    public bool CanMove = true;
+    public bool CanRotate = true;
+
 
     private float _speed = 3f;
 
-
     [SerializeField] private NavMeshAgent _navMeshAgent;
 
-    private bool _canMove = true;
 
     private Vector3 _previousPosition;
     private Vector3 _expectedPosition;
 
-    private float _timeElapsed, _radius;
-    private Vector3 _startPosition = Vector3.zero;
-    private bool _ranged;
+   
+
+
+    private EnemyAnimatorController _animatorController;
+    private float _currentSpeed;
 
 
     private void Start()
     {
-        Subscribe();
+       
         _expectedPosition = transform.position;
-        _startPosition = transform.position;
     }
 
+
+    private void FixedUpdate()
+    {
+        if(CanRotate)
+        {
+            if (Target != null)
+            {
+                _navMeshAgent.updateRotation = false;
+                RotateToTarget(); 
+            }
+            else
+            {
+                _navMeshAgent.updateRotation = true;
+            }
+        }
+    }
+
+    private void RotateToTarget()
+    {
+        Vector3 targetDirection = new Vector3(Target.GetPosition().x, transform.position.y, Target.GetPosition().z) - transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.fixedDeltaTime * 100);
+    }
+
+
+
+    public void Setup(EnemyAnimatorController animatorController)
+    {
+        _animatorController = animatorController;
+        Subscribe();
+    }
 
     public void UpdatePosition(Vector3 position)
     {
         _expectedPosition = position;
-        _startPosition = transform.position;
     }
 
     private void TimeTick()
     {
+        if (CanMove == false)
+        {
+            _navMeshAgent.ResetPath();
+            return;
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             MoveCurrentEnemy();
@@ -68,27 +106,35 @@ public class EnemyMovementController : MonoBehaviour
             _navMeshAgent.SetDestination(Target.GetPosition());
         }
 
+        CountCurrentSpeed();
     }
 
 
     private void MoveEnemyOther()
     {
-        Vector3 curMove = transform.position - _previousPosition;
 
         if (Target != null)
         {
-            if (Vector3.Distance(_expectedPosition, transform.position) >= 3f)
+            float dist = Vector3.Distance(transform.position, _expectedPosition);
+
+            if (dist > 4f)
             {
-                float dist = Vector3.Distance(_expectedPosition, Target.GetPosition());
-                Vector3 averagePostion = _expectedPosition - Target.GetPosition().normalized * dist / 2;
+                //float dist = Vector3.Distance(_expectedPosition, Target.GetPosition());
+                //Vector3 averagePostion = (_expectedPosition + Target.GetPosition()) / 2;
 
                 _navMeshAgent.speed = _speed * 1.5f;
-                _navMeshAgent.SetDestination(averagePostion);
+                _navMeshAgent.SetDestination(_expectedPosition);
                 return;
             }
-            else
+            else if(dist > 1f)
             {
-                _navMeshAgent.SetDestination(Target.GetPosition());
+                _navMeshAgent.speed = _speed * 1.21f;
+                _navMeshAgent.SetDestination(_expectedPosition);
+            }
+            else if (dist <= 1f)
+            {
+                _navMeshAgent.speed = _speed;
+                _navMeshAgent.ResetPath();
             }
         }
         else
@@ -96,66 +142,37 @@ public class EnemyMovementController : MonoBehaviour
             _navMeshAgent.SetDestination(_expectedPosition);
         }
 
-        _previousPosition = transform.position;
+        CountCurrentSpeed();
 
+    }
 
+    private void CountCurrentSpeed()
+    {
+        Vector3 curMove = transform.localPosition - _previousPosition;
+        _currentSpeed = curMove.magnitude / Time.fixedDeltaTime;
+        _previousPosition = transform.localPosition;
+
+        _animatorController.Speed = _currentSpeed;
+
+        if (Target != null)
+        {
+            if (Vector3.Distance(Target.GetPosition(), transform.position) < 1.3f)
+            {
+                _animatorController.NeedToUseMeleeAttack = true;
+            }
+            else
+            {
+                _animatorController.NeedToUseMeleeAttack = false;
+            }
+        }
+        else
+        {
+            _animatorController.NeedToUseMeleeAttack = false;
+        }
     }
 
 
 
-
-       // _navMeshAgent.Warp(_expectedPosition);
-
-        //if ((_expectedPosition - _startPosition).sqrMagnitude > 0.025f)
-        //{
-
-
-        //    if (Target != null)
-        //    {
-        //        _navMeshAgent.SetDestination(Target.GetPosition());
-        //    }
-        //    else  // TEST IT MORE!      TODO !!!!
-        //    {
-        //        float distance = Vector3.Distance(_expectedPosition, transform.position);
-
-        //        float speed = 5f * (distance / 2f); // check it TODO !!!1
-        //        if (speed < 3)
-        //        {
-        //            speed = 3;
-        //        }
-
-        //        _navMeshAgent.speed = speed;
-
-        //        if (_expectedPosition != _startPosition)
-        //        {
-        //            _navMeshAgent.SetDestination(_expectedPosition);
-        //        }
-
-        //        _previousPosition = transform.position;
-        //    }
-
-        //    return;
-        //}
-
-        //_navMeshAgent.SetDestination(_expectedPosition);
-        //_previousPosition = transform.position;
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 
 
     private void Subscribe()
     {

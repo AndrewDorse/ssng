@@ -27,8 +27,8 @@ namespace Silversong.Game
             _movementController = new LocalHeroMovementController(_characterController, _agent, _heroAnimatorController); // TODO change anim to Action<float> ???
 
 
-            _heroMesh.SetClassAndRace(InfoProvider.instance.GetHeroClass(heroData.classId), InfoProvider.instance.GetSubrace(heroData.raceId));
-
+            _heroMesh.SetClassAndRace(InfoProvider.instance.GetHeroClass(heroData.classId), InfoProvider.instance.GetSubrace(heroData.SubraceId));
+            _heroAnimatorController.SetupForLocalHero();
 
 
         }
@@ -46,6 +46,8 @@ namespace Silversong.Game
 
         private void OnDestroy()
         {
+            _movementController.Dispose();
+
         }
 
         public StatsController GetStatsController()
@@ -55,6 +57,11 @@ namespace Silversong.Game
 
         public void SetTarget(string targetId)
         {
+        }
+
+        public string GetId()
+        {
+            return DataController.instance.LocalPlayerData.userId;
         }
     }
 }

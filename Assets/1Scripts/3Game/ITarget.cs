@@ -11,4 +11,6 @@ public interface ITarget
 
     public void SetTarget(string targetId);
 
+    public string GetId();
+
 }

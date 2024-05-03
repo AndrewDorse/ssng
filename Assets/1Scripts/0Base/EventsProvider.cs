@@ -64,12 +64,42 @@ public static class EventsProvider
     // Battle
 
     public static Action<ITarget> OnLocalHeroWeaponHitEnemyCollider; // local hit
-    public static Action<string> OnEnemyDeathRpcRecieved; // death rpc from master
+    public static Action<string, string> OnEnemyDeathRpcRecieved; // death rpc from master
     public static Action<string, string, float> OnEnemyRecievedDamage;// local damage to enemy
     public static Action<AllEnemiesRecievedDamageData> OnAllEnemiesRecievedDamageDataRpc; // damage info from other
 
 
+    // local cast
+    public static Action<int> OnAbilityButtonPressed; 
+    public static Action<int> OnAbilityButtonReleased;
+    public static Action OnAbilityCastStarted;
+    public static Action<ActiveAbilitySlot> OnAbilityCastFinished;
+    public static Action OnAbilityUseTrigger;
+    //
+
+    public static Action<BuffDataRPCSlot> OnBuffDataRpcRecieved;
+
+    // local passives triggers
+    public static Action<Enums.PassiveTrigger> OnLocalHeroPassiveTrigger;
+
+
     public static Action OnDeathOfAllEnemies;
+
+
+
+
+    // inventory
+
+    public static Action<List<ItemSlot>> OnInventoryItemsChanged;
+
+
+
+
+
+
+    // abilities
+    public static Action<PassiveAbility> OnPassiveAbilityLearnt;
+
 
 
     //statistics

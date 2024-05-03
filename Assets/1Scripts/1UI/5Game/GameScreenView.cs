@@ -9,7 +9,7 @@ public class GameScreenView : ScreenView
 
 
 
-
+    public AbilityButton[] abilityButtons;
 
 
 

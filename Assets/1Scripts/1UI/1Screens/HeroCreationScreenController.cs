@@ -184,7 +184,7 @@ public class HeroCreationScreenController : ScreenController
         _view.heroInfoController.SetSubrace(subrace);
         slot.Choose(true);
 
-        _heroData.raceId = subrace.id;
+        _heroData.SubraceId = subrace.id;
         OnHeroDataUpdate();
 
         _currentSubrace = subrace;

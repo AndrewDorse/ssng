@@ -25,7 +25,7 @@ namespace Silversong.Game
             Nickname = nickname;
             UserId = userId;
 
-            _heroMesh.SetClassAndRace(InfoProvider.instance.GetHeroClass(heroData.classId), InfoProvider.instance.GetSubrace(heroData.raceId));
+            _heroMesh.SetClassAndRace(InfoProvider.instance.GetHeroClass(heroData.classId), InfoProvider.instance.GetSubrace(heroData.SubraceId));
 
             _heroMesh.TurnOffWeaponControllers();
         }
@@ -55,5 +55,10 @@ namespace Silversong.Game
         {
 
         }
+        public string GetId()
+        {
+            return UserId;
+        }
+
     }
 }

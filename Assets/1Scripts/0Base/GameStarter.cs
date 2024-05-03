@@ -8,52 +8,114 @@ public class GameStarter
     
     public void Initialize()
     {
-        EventsProvider.OnPlayersDataChanged += CheckIfAllPlayersAreReady;
+        EventsProvider.OnPlayersDataChanged += CheckIfAllPlayersAreReadyForStartGame;
+
+
+        EventsProvider.OnLevelEnd += SubcribeForNewLevelStart;
 
     }
 
 
-    private void CheckIfAllPlayersAreReady(List<PlayerData> playersData)
+    private void SubcribeForNewLevelStart()
     {
-        if(!PhotonNetwork.IsMasterClient)
-        {
-            return;
-        }
+        EventsProvider.OnPlayersDataChanged += CheckIfAllPlayersAreReadyForStartNewLevel;
+    }
 
+
+    private void CheckIfAllPlayersAreReadyForStartGame(List<PlayerData> playersData)
+    {
         if (DataController.instance.GameData.gameStage != Enums.ServerGameStage.creatingHeroes)
         {
             return;
         }
 
-        if (playersData.Count == 0)
+        if (!IsAllPlayersReady(playersData))
+        {
+            return;
+        }
+        
+        StartGame();
+    }
+
+
+
+    private void CheckIfAllPlayersAreReadyForStartNewLevel(List<PlayerData> playersData)
+    {
+        if (DataController.instance.GameData.gameStage != Enums.ServerGameStage.camp)
         {
             return;
         }
 
-        foreach(PlayerData player in playersData)
+        if (!IsAllPlayersReady(playersData))
         {
-            if(player.ready == false)
+            return;
+        }
+
+        StartNewLevel();
+    }
+
+    private bool IsAllPlayersReady(List<PlayerData> playersData)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return false;
+        }
+
+        if (playersData.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (PlayerData player in playersData)
+        {
+            if (player.ready == false)
             {
-                return;
+                return false;
             }
         }
 
-
-        DataController.instance.GameData.gameStage = Enums.ServerGameStage.gameLevel;
-        StartGame();
+        return true;
     }
 
     private void StartGame()
     {
-        EventsProvider.OnPlayersDataChanged -= CheckIfAllPlayersAreReady;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DataController.instance.GameData.gameStage = Enums.ServerGameStage.gameLevel;
+            DataController.instance.GameData.sceneName = GetNextSceneName(DataController.instance.GameData.Level);
 
-        EventsProvider.OnGameStart?.Invoke();
 
-        MainRPCController.instance.SendStartGameInfo();
 
-        Master.instance.ChangeGameStage(Enums.GameStage.game);
-        
+            EventsProvider.OnPlayersDataChanged -= CheckIfAllPlayersAreReadyForStartGame;
+
+            EventsProvider.OnGameStart?.Invoke();
+
+            MainRPCController.instance.SendStartGameInfo();
+
+            Master.instance.ChangeGameStage(Enums.GameStage.game);
+
+        }
     }
+
+    private void StartNewLevel()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DataController.instance.GameData.gameStage = Enums.ServerGameStage.gameLevel;
+            DataController.instance.GameData.sceneName = GetNextSceneName(DataController.instance.GameData.Level);
+            EventsProvider.OnPlayersDataChanged -= CheckIfAllPlayersAreReadyForStartNewLevel;
+
+
+            MainRPCController.instance.SendStartNewLevel();
+        }
+    }
+
+    private string GetNextSceneName(int level)
+    {
+        return "ForestGlade_2_VIolet";
+
+    }
+    
 
 
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class InventoryScreenView : ScreenView
 {
-    public Button[] topButtons;
+    public UniversalMenuButton[] botButtons;
     public Button[] tierButtons;
     public Button lootButton;
 

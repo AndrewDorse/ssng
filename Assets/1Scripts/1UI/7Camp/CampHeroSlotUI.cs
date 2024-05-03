@@ -10,6 +10,10 @@ public class CampHeroSlotUI : MonoBehaviour
     [SerializeField] private TMPro.TMP_Text _nicknameText;
 
 
+
+    [SerializeField] private ItemIconView[] _itemIcons;
+
+
     [SerializeField] private GameObject _readyMark;
 
 
@@ -20,8 +24,28 @@ public class CampHeroSlotUI : MonoBehaviour
         _classIcon.sprite = InfoProvider.instance.GetHeroClass(data.heroData.classId).icon;
         _nicknameText.text = data.nickname;
 
-        _readyMark.SetActive(data.active);
+        _readyMark.SetActive(data.ready);
 
+
+
+        SetupItemIcons(data.heroData.items);
+    }
+
+
+    private void SetupItemIcons(List<ItemSlot> items)
+    {
+        for(int i = 0; i < _itemIcons.Length; i++)
+        {
+            if (i < items.Count)
+            {
+                _itemIcons[i].gameObject.SetActive(true);
+                _itemIcons[i].Setup(InfoProvider.instance.GetItem(items[i].Id));
+            }
+            else
+            {
+                _itemIcons[i].gameObject.SetActive(false);
+            }
+        }
     }
 
 }

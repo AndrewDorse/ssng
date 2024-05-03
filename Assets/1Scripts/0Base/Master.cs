@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Silversong.Base;
 using UnityEngine.AddressableAssets;
+using Silversong.UI;
 
 public class Master : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class Master : MonoBehaviour
     {
         if(stage == Enums.GameStage.game)
         {
-            _gameStageController.LaunchGameStage("1Forest");
+            _gameStageController.LaunchGameStage(DataController.instance.GameData.sceneName);
             return;
         }
 
@@ -48,6 +49,16 @@ public class Master : MonoBehaviour
     {
         _uIController.OpenScreen(stage);
     }
+
+    public Popup GetPopup(Enums.PopupType type)
+    {
+        return _uIController.GetPopup(type);
+    }
+
+
+
+
+
 
 
     // connection
@@ -85,6 +96,15 @@ public class Master : MonoBehaviour
         DataController.instance.LocalData.RoomId = string.Empty;
         SaveController.SaveLocalData();
     }
+
+
+
+
+
+
+
+
+    // TODO maybe move it somewhere????? !!
 
     // loading screen
     public void SetLightLoadingScreen()

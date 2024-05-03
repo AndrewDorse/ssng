@@ -18,21 +18,25 @@ namespace Silversong.Game
 
 
         [SerializeField] private HealthBar _healthBar;
-
-        private StatsController _stats;
-
-
         [SerializeField] private EnemyMovementController _movementController;
 
 
+        private StatsController _stats;
+        private EnemyModelController _modelController;
+        private EnemyAnimatorController _animatorController;
 
 
-
-        public void Setup(EnemyData enemyData)
+        public void Setup(EnemyData enemyData, EnemyModelController enemyModelController)
         {
             Id = enemyData.id;
 
-            _stats = new StatsController(enemyData, OnHpReduced);
+            _stats = new StatsController(enemyData, OnHpReduced, OnControlStatesChanged);
+
+
+            _modelController = enemyModelController;
+
+            _animatorController = new EnemyAnimatorController(_modelController.Animator);
+            _movementController.Setup(_animatorController);
 
             EventsProvider.TenTimesPerSecond += Tick;
         }
@@ -41,12 +45,20 @@ namespace Silversong.Game
 
         public void UpdateInfo(EnemyData enemyData)
         {
-            _movementController.UpdatePosition(enemyData.position);
+            if (PhotonNetwork.IsMasterClient == false)
+            {
+                _movementController.UpdatePosition(enemyData.position);
 
-            TargetId = enemyData.targetId;
-            _target = TargetProvider.GetAllyTargetByTargetId(TargetId).Item1;
+                TargetId = enemyData.targetId;
+                _target = TargetProvider.GetAllyTargetByTargetId(TargetId).Item1;
 
-            _healthBar.SetValue(enemyData.healthPc);
+
+                _movementController.Target = _target;
+
+
+                _stats.CurrentHpInfoFromMaster(enemyData.health);
+                _healthBar.SetValueFromRpc(enemyData.healthPc);
+            }
         }
 
         public void SetTarget(string targetId)
@@ -86,12 +98,12 @@ namespace Silversong.Game
 
             // passives here too??
 
-            _healthBar.SetValue(_stats.CurrentHp / 100f); // change it to coroutine? to change hbar smoothly??? TODO check
+            _healthBar.SetValueLocal(_stats.CurrentHp / 100f); // change it to coroutine? to change hbar smoothly??? TODO check
 
 
             if (_stats.CurrentHp <= 0)
             {
-                DeathLocal();
+                DeathLocal(attackingId);
             }
         }
 
@@ -114,21 +126,25 @@ namespace Silversong.Game
         }
 
 
-        private void DeathLocal()
+        private void DeathLocal(string killerId)
         {
             if (PhotonNetwork.IsMasterClient == true)
             {
-                GameRPCController.instance.SendEnemyDeathToOthers(Id);
-                EventsProvider.OnEnemyDeathRpcRecieved(Id);
+                GameRPCController.instance.SendEnemyDeathToOthers(Id, killerId);
+                EventsProvider.OnEnemyDeathRpcRecieved?.Invoke(Id, killerId);
             }
         }
 
 
         private void Dispose()
         {
-            //  _agroController.Dispose();
-            //_stats.dispose
+
+
+            //_stats.dispose????/
+
+
             EventsProvider.TenTimesPerSecond -= Tick;
+            _animatorController.Dispose();
         }
 
 
@@ -142,9 +158,14 @@ namespace Silversong.Game
 
 
 
+        private void OnControlStatesChanged(Enums.ControlState stateToShow, bool canMove, bool canCast, bool canAttack, bool canRotate)
+        {
+            _movementController.CanMove = canMove;
+            _movementController.CanRotate = canRotate;
 
+            _animatorController.SetControlState(stateToShow);
 
-
+        }
 
 
 
@@ -160,6 +181,11 @@ namespace Silversong.Game
         public StatsController GetStatsController()
         {
             return _stats;
+        }
+
+        public string GetId()
+        {
+            return Id;
         }
     }
 }

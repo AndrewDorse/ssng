@@ -42,3 +42,8 @@ MonoBehaviour:
     shield: {fileID: -3476445861533169579, guid: cf990f248337c354bbed420ee176d018,
       type: 3}
     helmetType: 0
+  ActiveAbilities:
+  - {fileID: 11400000, guid: 798f0608aa44fd34b849553d6349830d, type: 2}
+  PassiveAbilities:
+  - {fileID: 11400000, guid: 153f7769de92dc1408d05021939f0d79, type: 2}
+  - {fileID: 11400000, guid: 3e667b4fb9bb1504fa9978f19720c59a, type: 2}

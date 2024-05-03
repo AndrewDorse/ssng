@@ -9,7 +9,22 @@ public class InfoProvider : MonoBehaviour
 
     [SerializeField] private HeroClassProviderData _heroClassProviderData;
     [SerializeField] private RaceProviderData _raceProviderData;
-    [SerializeField] private InventoryItemsProviderData _inventoryItemsProviderData;
+
+    [SerializeField] private InventoryItemProviderData _inventoryItemProviderData;
+
+    [SerializeField] private MobProviderData _mobProviderData;
+
+
+    [SerializeField] private ActiveAbilityProviderData _activeAbilityProviderData;
+    [SerializeField] private PassiveAbilityProviderData _passiveAbilityProviderData;
+
+
+
+    [SerializeField] private BuffProviderData _buffProviderData;
+
+
+
+
 
 
 
@@ -53,23 +68,58 @@ public class InfoProvider : MonoBehaviour
 
     public InventoryItem GetItem(int id)
     {
-        return _inventoryItemsProviderData.GetItem(id);
+        return _inventoryItemProviderData.GetItem(id);
     }
 
     public List<InventoryItem> GetItemsByTier(int id)
     {
-        return _inventoryItemsProviderData.GetItemsByTier(id);
+        return _inventoryItemProviderData.GetItemsByTier(id);
+    }
+
+
+    // MOBS
+    public Mob GetMob(int id)
+    {
+        return _mobProviderData.GetMob(id);
     }
 
 
 
+    // ACTIVE ABILITIES
+    public ActiveAbility GetAbility(int id)
+    {
+        return _activeAbilityProviderData.GetAbility(id);
+    }
+    public List<ActiveAbility> GetSpellsBySchool(Enums.MagicSchools magicSchool)
+    {
+        return _activeAbilityProviderData.GetSpellsBySchool(magicSchool);
+    }
+    public List<ActiveAbility> GetCommonSpells()
+    {
+        return _activeAbilityProviderData.GetCommonSpells();
+    }
 
 
+    // PASSIVE ABILITIES
+    public PassiveAbility GetPassive(int id)
+    {
+        return _passiveAbilityProviderData.GetPassive(id);
+    }
+    public List<PassiveAbility> GetPassivesBySchool(Enums.MagicSchools magicSchool)
+    {
+        return _passiveAbilityProviderData.GetPassivesBySchool(magicSchool);
+    }
+    public List<PassiveAbility> GetCommonPassives()
+    {
+        return _passiveAbilityProviderData.GetCommonPassives();
+    }
 
 
-
-
-
+    // BUFF
+    public Buff GetBuff(int id)
+    {
+        return _buffProviderData.GetBuff(id);
+    }
 
 
 

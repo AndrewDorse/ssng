@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Silversong.Base
+namespace Silversong.UI
 {
     public class UIController : MonoBehaviour
     {
@@ -11,6 +11,8 @@ namespace Silversong.Base
         private ScreenController _currentScreen;
         private ScreenView _currentView;
 
+
+        [SerializeField] private PopupController _popupController;
         [SerializeField] private ScreenView[] _views;
 
         [SerializeField] private GameObject _transparentLoadingScreen;
@@ -74,6 +76,26 @@ namespace Silversong.Base
                 _currentScreen.Close();
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public Popup GetPopup(Enums.PopupType type)
+        {
+            return _popupController.GetPopup(type);
+        }
+
+
+
 
     }
 }

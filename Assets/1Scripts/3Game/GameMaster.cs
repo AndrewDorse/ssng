@@ -22,25 +22,33 @@ namespace Silversong.Game
 
         [SerializeField] private PlayerCreator _playerCreator;
         [SerializeField] private EnemiesController _enemiesController;
+        [SerializeField] private GameCameraController _gameCamera;
+
         private StatisticsController _statisticsController;
 
         private OtherHeroesController _otherHeroesController = new OtherHeroesController();
-
+        private RewardsController _rewardsController;
 
         private void Awake()
         {
             instance = this;
 
+            _rewardsController = new RewardsController();
 
+            EventsProvider.OnLevelEnd += LevelEnd;
         }
 
         public void LevelStart(List<PlayerData> playersData) // enemies info here???? TODO
         {
             LocalHero = CreateLocalHero(DataController.instance.GetMyHeroData());
 
+            _gameCamera.Setup(LocalHero.gameObject);
+
             OtherHeroes = CreateOtherHeroes(playersData);
 
             EventsProvider.ThreeTimesPerSecond += SendLocalHeroDataToOthers;
+
+            
 
             _statisticsController = new StatisticsController();
 
@@ -60,7 +68,7 @@ namespace Silversong.Game
 
         private void LevelEnd()
         {
-
+            _gameCamera.gameObject.SetActive(false);
         }
 
 
@@ -126,7 +134,7 @@ namespace Silversong.Game
 
 
 
-
+            EventsProvider.OnLevelEnd?.Invoke();
             LevelDispose();
             Master.instance.ChangeGameStage(Enums.GameStage.statistics);
            

@@ -27,7 +27,14 @@ public class CampScreenController : ScreenController
 
     private void ReadyToNextLevel()
     {
-
+        if (MainRPCController.instance.IsMaster())
+        {
+            DataController.instance.SetLocalPlayerReady();
+        }
+        else
+        {
+            MainRPCController.instance.SetLocalPlayerReady();
+        }
 
     }
 
@@ -60,13 +67,25 @@ public class CampScreenController : ScreenController
 
     private void SubcribeTopButtons()
     {
-        _view.topButtons[1].onClick.AddListener(OpenInventory);
+        _view.botButtons[0].Setup(OpenCamp);
+        _view.botButtons[1].Setup(OpenInventory);
+        _view.botButtons[2].Setup(OpenAbilities);
     }
 
+
+    private void OpenCamp()
+    {
+        Master.instance.ChangeGameStage(Enums.GameStage.camp);
+    }
 
     private void OpenInventory()
     {
         Master.instance.ChangeGameStage(Enums.GameStage.inventory);
+    }
+
+    private void OpenAbilities()
+    {
+        Master.instance.ChangeGameStage(Enums.GameStage.abilities);
     }
 
 

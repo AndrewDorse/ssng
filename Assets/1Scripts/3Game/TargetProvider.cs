@@ -16,7 +16,7 @@ namespace Silversong.Game
             {
                 return (null, "");
             }
-            if (GameMaster.instance.OtherHeroes == null)
+            if (GameMaster.instance.OtherHeroes == null) // what about solo game??? TODO
             {
                 return (null, "");
             }
@@ -125,6 +125,33 @@ namespace Silversong.Game
 
             return result;
         }
+
+
+
+
+
+
+        public static List<ITarget> GetEnemyTargetsInRadius(Vector3 point, float radius)
+        {
+            List<Enemy> enemies = GameMaster.instance.Enemies;
+
+            List<ITarget> list = new List<ITarget>();
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+
+                if (Vector3.Distance(point, enemies[i].GetPosition()) <= radius)
+                {
+                    list.Add(enemies[i]);
+                }
+            }
+
+            return list;
+        }
+
+
+
+
 
     }
 }

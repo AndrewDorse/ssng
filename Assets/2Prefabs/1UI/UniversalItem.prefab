@@ -97,6 +97,7 @@ MonoBehaviour:
   _icon: {fileID: 491373206356021297}
   _frame: {fileID: 5934102606277926467}
   _button: {fileID: 1378917139401611914}
+  _emptySlot: {fileID: 21300000, guid: a0c1683eaa755774fa87b799c94aa4c3, type: 3}
 --- !u!1 &924988917141053391
 GameObject:
   m_ObjectHideFlags: 0

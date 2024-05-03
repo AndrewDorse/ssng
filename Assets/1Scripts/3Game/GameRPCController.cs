@@ -77,11 +77,11 @@ public class GameRPCController : MonoBehaviourPun
 
 
     // enemy death
-    public void SendEnemyDeathToOthers(string enemyId)
+    public void SendEnemyDeathToOthers(string enemyId, string killerId)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            photonView.RPC("SendEnemyDeathToOthersRPC", RpcTarget.Others, enemyId);
+            photonView.RPC("SendEnemyDeathToOthersRPC", RpcTarget.Others, JsonUtility.ToJson(new EnemyDeathRPCData(enemyId, killerId)));
         }
     }
     [PunRPC]
@@ -89,9 +89,47 @@ public class GameRPCController : MonoBehaviourPun
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            EventsProvider.OnEnemyDeathRpcRecieved?.Invoke(data);
+            EnemyDeathRPCData rpcResult = JsonUtility.FromJson<EnemyDeathRPCData>(data);
+            EventsProvider.OnEnemyDeathRpcRecieved?.Invoke(rpcResult.EnemyId, rpcResult.KillerId);
         }
     }
+
+
+
+
+    // BUFF RPC
+    public void SendBuffApplyDataToOthers(string data)
+    {
+        photonView.RPC("SendBuffApplyDataToOthersRPC", RpcTarget.Others, data);
+    }
+    [PunRPC]
+    private void SendBuffApplyDataToOthersRPC(string data)
+    {
+        EventsProvider.OnBuffDataRpcRecieved?.Invoke(JsonUtility.FromJson<BuffDataRPCSlot>(data));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -142,4 +180,16 @@ public class HeroInfoRPC
 }
 
 
-    
+[System.Serializable]
+public class EnemyDeathRPCData
+{
+    public string EnemyId;
+
+    public string KillerId;
+
+    public EnemyDeathRPCData(string enemyId, string killerId)
+    {
+        EnemyId = enemyId;
+        KillerId = killerId;
+    }
+}

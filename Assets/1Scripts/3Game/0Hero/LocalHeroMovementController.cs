@@ -66,5 +66,10 @@ namespace Silversong.Game
             _animatorController.Speed = _currentSpeed;
 
         }
+
+        public void Dispose()
+        {
+            EventsProvider.OnJoystickMove -= Move;
+        }
     }
 }

@@ -20,27 +20,54 @@ namespace Silversong.Game
         private Enums.Animations _currentAnimation;
 
 
-        bool _needToUseMeleeAttack = false;
-        bool _needToUseRangeAttack = false;
+        private bool _needToUseMeleeAttack = false;
+        private bool _needToUseRangeAttack = false;
+
+
+        private float _legsLayoutOffset = 0;
+
+
+
+
+        // local
+        public void SetupForLocalHero()
+        {
+            EventsProvider.OnAbilityCastStarted += OnCastStarted;
+            EventsProvider.OnAbilityCastFinished += OnCastFinished;
+            EventsProvider.OnAbilityUseTrigger += OnAbilityUseTrigger;
+        }
+
+        private void OnCastStarted()
+        {
+            _state = Enums.AnimatorStates.casting;
+        }
+
+        private void OnCastFinished(ActiveAbilitySlot abilitySlot)
+        {
+            _state = Enums.AnimatorStates.playingSpecialAnimation;
+            SetAnimation(abilitySlot.activeAbility.CastAnimation);
+        }
+
+        private void OnAbilityUseTrigger( )
+        {
+            _state = Enums.AnimatorStates.normal;            
+        }
+
 
 
         private void FixedUpdate()
         {
-
-
-            // legs
-
-            // main
-
-
-
-
+            LegsAnimation();
         }
 
         private void Start() // should we separate it?  TODO
         {
             EventsProvider.TenTimesPerSecond += CheckAnimatorState;
         }
+
+
+        
+
 
 
 
@@ -72,6 +99,11 @@ namespace Silversong.Game
                     }
                 }
             }
+            else if (_state == Enums.AnimatorStates.casting)
+            {
+                SetAnimation(Enums.Animations.Cast);
+
+            }
 
 
 
@@ -79,7 +111,7 @@ namespace Silversong.Game
 
 
 
-        }
+            }
 
 
 
@@ -140,6 +172,41 @@ namespace Silversong.Game
             }
         }
 
+
+
+
+
+
+
+
+
+        private void LegsAnimation()
+        {
+            _legsLayoutOffset -= Time.fixedDeltaTime;
+
+            if (_legsLayoutOffset > 0f) return;
+
+            _legsLayoutOffset = 0.33f;
+
+           
+                if (Speed > 0.25f)
+                {
+                    _animator.SetLayerWeight(1, 1);
+                }
+                else _animator.SetLayerWeight(1, 0);
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
         private void OnDestroy()
         {
             Dispose();
@@ -148,6 +215,10 @@ namespace Silversong.Game
         public void Dispose()
         {
             EventsProvider.TenTimesPerSecond -= CheckAnimatorState;
+
+            EventsProvider.OnAbilityCastStarted -= OnCastStarted;
+            EventsProvider.OnAbilityCastFinished -= OnCastFinished;
+            EventsProvider.OnAbilityUseTrigger -= OnAbilityUseTrigger;
         }
     }
 }

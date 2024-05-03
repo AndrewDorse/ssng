@@ -28,4 +28,8 @@ public class HeroClass : ScriptableObject
     public HeroClass[] nextClasses;
 
     public HeroClassMeshes classMeshes;
+
+
+    public List<ActiveAbility> ActiveAbilities;
+    public List<PassiveAbility> PassiveAbilities;
 }

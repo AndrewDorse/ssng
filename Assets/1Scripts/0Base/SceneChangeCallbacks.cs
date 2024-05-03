@@ -61,17 +61,60 @@ public static class SceneChangeCallbacks
             needToChangeScene = true;
         }
 
+
+
         // inside camp
         else if (currentStage == Enums.GameStage.camp && nextStage == Enums.GameStage.inventory) // inventory / shop
         {
             callback = InventoryCallback;
             needToChangeScene = false;
         }
+        else if (currentStage == Enums.GameStage.camp && nextStage == Enums.GameStage.abilities) // abilities
+        {
+            callback = AbilitiesCallback;
+            needToChangeScene = false;
+        }
+
+
+
         else if (currentStage == Enums.GameStage.inventory && nextStage == Enums.GameStage.camp) // camp
         {
             callback = CampCallback;
             needToChangeScene = false;
         }
+        else if (currentStage == Enums.GameStage.inventory && nextStage == Enums.GameStage.abilities) // abilities
+        {
+            callback = AbilitiesCallback;
+            needToChangeScene = false;
+        }
+
+        else if (currentStage == Enums.GameStage.abilities && nextStage == Enums.GameStage.camp) // camp
+        {
+            callback = CampCallback;
+            needToChangeScene = false;
+        }
+        else if (currentStage == Enums.GameStage.abilities && nextStage == Enums.GameStage.inventory) // abilities
+        {
+            callback = InventoryCallback;
+            needToChangeScene = false;
+        }
+
+        // new level
+
+        else if (currentStage == Enums.GameStage.camp ||
+            currentStage == Enums.GameStage.inventory ||
+            currentStage == Enums.GameStage.abilities ||
+            currentStage == Enums.GameStage.campHeroInfo
+            ) 
+        {
+            if (nextStage == Enums.GameStage.game)
+            {
+                callback = LevelLoadedCallback;
+                needToChangeScene = true;
+            }
+        }
+
+
 
 
 
@@ -140,5 +183,9 @@ public static class SceneChangeCallbacks
     private static void InventoryCallback()
     {
         Master.instance.OpenScreen(Enums.GameStage.inventory);
+    }
+    private static void AbilitiesCallback()
+    {
+        Master.instance.OpenScreen(Enums.GameStage.abilities);
     }
 }

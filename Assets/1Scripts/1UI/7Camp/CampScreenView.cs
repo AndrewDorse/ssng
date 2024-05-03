@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CampScreenView : ScreenView
 {
-    public Button[] topButtons;
+    public UniversalMenuButton[] botButtons;
 
     public Button readyButton;
     public CampHeroSlotUI[] campHeroSlots;

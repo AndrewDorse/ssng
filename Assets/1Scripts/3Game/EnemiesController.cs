@@ -30,7 +30,7 @@ namespace Silversong.Game
 
 
             EventsProvider.OnBecomeMaster += SubscribeAsMaster;
-
+            EventsProvider.OnBuffDataRpcRecieved += ApplyBuffDataFromRpc;
 
             EventsProvider.OnEnemyDeathRpcRecieved += OnEnemyDeath;
 
@@ -38,6 +38,23 @@ namespace Silversong.Game
             _damageController = new EnemiesIncomingDamageController();
         }
 
+
+        private void ApplyBuffDataFromRpc(BuffDataRPCSlot data)
+        {
+            for(int i = 0; i < data.Targets.Length; i++)
+            {
+                Enemy enemy = GetEnemyById(data.Targets[i]);
+
+                BuffSlot buffSlot = new BuffSlot(InfoProvider.instance.GetBuff(data.Id), data.Level);
+
+                enemy.GetStatsController().ApplyBuff(buffSlot);
+
+            }
+
+
+
+
+        }
 
 
 
@@ -83,7 +100,7 @@ namespace Silversong.Game
             return new EnemiesData(data);
         }
 
-        private void OnEnemyDeath(string enemyId)
+        private void OnEnemyDeath(string enemyId, string killerId)
         {
             foreach (Enemy enemy in _enemies)
             {
@@ -102,7 +119,18 @@ namespace Silversong.Game
             }
         }
 
+        private Enemy GetEnemyById(string id)
+        {
+            foreach (Enemy enemy in _enemies)
+            {
+                if(enemy.Id == id)
+                {
+                    return enemy;
+                }
+            }
 
+            return null;
+        }
 
 
 
@@ -150,6 +178,8 @@ namespace Silversong.Game
 
         public void SetEnemies(List<EnemyData> data)
         {
+            // check on level started?
+
             CheckEnemies();
 
             // check enemies we have
@@ -213,19 +243,45 @@ namespace Silversong.Game
             foreach (EnemyData enemyData in data)
             {
                 Enemy enemy = Instantiate(_prefab, enemyData.position, Quaternion.identity);
-                enemy.Setup(enemyData);
+
+                EnemyModelController modelController = Instantiate(InfoProvider.instance.GetMob(enemyData.mobId).Prefab, enemy.transform);
+
+
+                enemy.Setup(enemyData, modelController);
                 _enemies.Add(enemy);
             }
         }
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [System.Serializable]
     public class EnemyData
     {
-        public int mobId;
+        public int mobId; // 
 
-        public string id;
+        public string id; // in game
 
         public float health;
         public float healthPc;

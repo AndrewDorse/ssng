@@ -30,13 +30,13 @@ public class PlayerSlotInRoom : MonoBehaviour
 
         }
 
-        if (playerData.heroData.raceId == -1)
+        if (playerData.heroData.SubraceId == -1)
         {
             _classIcon.sprite = InfoProvider.instance.GetEmptySlotSprite();
         }
         else
         {
-            _raceIcon.sprite = InfoProvider.instance.GetSubrace(playerData.heroData.raceId).icon;
+            _raceIcon.sprite = InfoProvider.instance.GetSubrace(playerData.heroData.SubraceId).icon;
         }
 
 

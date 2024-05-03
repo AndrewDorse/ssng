@@ -117,12 +117,36 @@ public class MainRPCController : MonoBehaviourPun
     }
 
 
+    public void SendStartNewLevel()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DataController.instance.AskToUpdatePlayersData();
+            Master.instance.ChangeGameStage(Enums.GameStage.game);
+            photonView.RPC("SendStartNewLevelRPC", RpcTarget.Others, DataController.instance.GetMyHeroDataForRPC());
+        }
+    }
+    [PunRPC]
+    private void SendStartNewLevelRPC(string data)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            PlayersDataRPC playersData = JsonUtility.FromJson<PlayersDataRPC>(data);
+            DataController.instance.GameData = playersData.gameData;
+            Master.instance.ChangeGameStage(Enums.GameStage.game);
+        }
+    }
 
 
 
-    // RECONNECT
 
-    public void SendNewUserIdToOthers()
+
+
+
+
+        // RECONNECT
+
+        public void SendNewUserIdToOthers()
     {
         photonView.RPC("SendNewUserIdToOthers", RpcTarget.Others, JsonUtility.ToJson(new NewUserIdDataRpc(
             DataController.instance.LocalData.UserId,

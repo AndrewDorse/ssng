@@ -10,14 +10,14 @@ public class Enums
         
         game, statistics, rewards, heroUpgrade, 
         
-        camp, inventory, talents, campHeroInfo 
+        camp, inventory, abilities, campHeroInfo 
     
     }
     public enum ServerGameStage { creatingHeroes, gameLevel, camp, finished }
 
     public enum HeroCreationPage { heroClass, race, origin, startItem, overview }
 
-
+    public enum PopupType { item, ability }
 
 
 
@@ -55,6 +55,7 @@ public class Enums
         available, unavailable, choosen,  // nfts
         noPlace, notEnoughMoney, canBuy, takeFromLoot, putToLoot, canSell, cannotSell, // items
 
+        canLearn, CanUpgrade, notEnoughPointsToLearn, notEnoughPointsToUpgrade, requirementsNotFulfilled, maxAmount, maxLevel, // talents
 
         backButton // info
     }
@@ -68,6 +69,89 @@ public class Enums
 
     // Inventory
     public enum Rarity : byte { common, uncommon, rare, epic, legendary }
+
+
+
+
+    // ABILITIES!!!!
+    public enum AbilityTarget : byte { Caster, Enemies, allies, lowestHpAlly, randomTarget, environment, closestAnotherAlly }
+    public enum AbilityActionType : byte { damage, heal, buff, taunt, summon, restoreMana, damageAllyAndBuffCaster, resurrection, projectile }
+    public enum AbilityCostType : byte { mana, health, }  // gold???
+    public enum AbilityCastTypes : byte { withoutTarget, pointing }
+    public enum AbilityConcreteTypes : byte
+    {
+        attackSkill, defenseSkill, rangeSkill,
+        healSpell,
+        fireSpell, iceSpell, arcaneSpell, electroSpell, natureSpell, demonologySpell, deathSpell, lightSpell
+
+    }
+    public enum DamageTypes : byte { physical, fire, ice, electro, arcane, light, dark, poison, bloodshed, pure }
+    //public enum AbilityCasterStages : byte { nothing, pointing }
+    public enum MagicSchools : byte {  None, fire, ice, arcane, electro, nature, demonology, death, light }
+
+
+
+    // Passives
+    public enum AbilityType : byte { Class, Common, Witchcraft}
+    public enum PassiveTypes : byte
+    {
+        stats, buffByTrigger, special,
+        debuffToEnemyByTrigger, aura, buffOnStartLevel, castByTrigger,
+        areaEffectByTrigger,
+        permanentStatsByTrigger,
+        healByTrigger
+    }
+
+    public enum PassiveTrigger : byte
+    {
+        none,
+
+        recievedDamage, attacked, castAnyAbility, attackAnimation, attacking,
+
+        hpLessThen10, hpLessThen25, hpLessThen50, hpLessThen75,
+
+        castAnySpell,
+        castArcaneSpell, castFireSpell, castIceSpell, castElectroSpell, castNatureSpell, castDemonologySpell, castDeathSpell, castLightSpell,
+
+        block, evade, parry,
+
+        criticalHit,
+        recievedCriticalHit,
+
+        dayStartOfLevel, nightStartOfLevel,
+
+        spellCrit, 
+        fireSpellCrit, arcaneSpellCrit, iceSpellCrit, electroSpellCrit, natureSpellCrit, DemonologySpellCrit, DeathSpellCrit, LightSpellCrit
+    }
+
+
+
+
+
+
+    // BUFF
+    public enum CharacterStates : byte
+    {
+        none, invulnerable, invisible, magicInvulnerable, physicInvulnerable, controlInvulnerable
+    }
+    public enum ControlState : byte { none, Stun, Knocked, Frozen, Silenced, CantMove, Hexed, Disarmed, Sleep, Fear }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

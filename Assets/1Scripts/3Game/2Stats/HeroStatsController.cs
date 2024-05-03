@@ -12,12 +12,16 @@ public class HeroStatsController : MonoBehaviour
 
     private StatsController _statsController;
     private HeroDamageDealer _heroDamageDealer;
+    private LocalHeroAbilityCaster _abilityCaster;
+
+
 
     private void Awake()
     {
         instance = this;
 
         EventsProvider.OnGameStart += Initialize;
+        EventsProvider.OnLevelEnd += OnLevelEnd;
     }
 
     private void Initialize()
@@ -26,14 +30,30 @@ public class HeroStatsController : MonoBehaviour
 
         _heroDamageDealer = new HeroDamageDealer();
 
-        _statsController = new StatsController(
-            InfoProvider.instance.GetHeroClass(heroData.classId),
-            InfoProvider.instance.GetSubrace(heroData.raceId)
-            );
+        _statsController = new StatsController(heroData);
+
+
+        _abilityCaster = new LocalHeroAbilityCaster();
     }
 
 
+    private void OnLevelEnd()
+    {
+        if(_statsController.CurrentHp > 0)
+        {
+           
+        }
 
+        LevelUp();
+    }
+
+    private void LevelUp()
+    {
+        DataController.instance.LocalPlayerData.heroData.level++;
+        DataController.instance.LocalPlayerData.heroData.TalentPoints++;
+
+        Debug.Log("#LevelUp# " + DataController.instance.LocalPlayerData.heroData.level);
+    }
 
 
 

@@ -29,9 +29,7 @@ namespace Silversong.Game
 
 
         public void DamageRecieved(string attackingId, string attackedId, float damageAmount)
-        {
-            Debug.Log(attackingId);
-
+        {   
             // no list
             if (_allDamageList == null)
             {
@@ -138,6 +136,8 @@ namespace Silversong.Game
 
             foreach (EnemyRecievedDamageSlot slot in enemyData.list)
             {
+                slot.accumulatedDamage *= 0.85f;
+
                 if (slot.accumulatedDamage > bestDamageResult)
                 {
                     bestDamageCharacterId = slot.attackingId;
@@ -187,7 +187,7 @@ namespace Silversong.Game
 
         }
 
-        private void RemoveEnemyData(string enemyId)
+        private void RemoveEnemyData(string enemyId, string killerId)
         {
             foreach (EnemyRecievedDamageData data in _allDamageList)
             {
