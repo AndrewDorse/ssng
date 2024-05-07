@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Mob Provider Data
   m_EditorClassIdentifier: 
   _mobs:
+  - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
   - {fileID: 11400000, guid: f257bf5ac60d30548965052c0cb929f4, type: 2}
   - {fileID: 11400000, guid: 95099243a677e24468a3c023d1421b37, type: 2}

@@ -27,7 +27,7 @@ public class CampScreenController : ScreenController
 
     private void ReadyToNextLevel()
     {
-        if (MainRPCController.instance.IsMaster())
+        if (MainRPCController.instance.IsMaster)
         {
             DataController.instance.SetLocalPlayerReady();
         }

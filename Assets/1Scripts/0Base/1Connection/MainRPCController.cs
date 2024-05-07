@@ -1,11 +1,14 @@
 using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MainRPCController : MonoBehaviourPun
 {
     public static MainRPCController instance;
+
+    public bool IsMaster => PhotonNetwork.IsMasterClient;
+
+
 
     private void Awake()
     {
@@ -14,10 +17,7 @@ public class MainRPCController : MonoBehaviourPun
     }
 
 
-    public bool IsMaster()
-    {
-        return PhotonNetwork.IsMasterClient;
-    }
+   
 
 
 
@@ -48,14 +48,16 @@ public class MainRPCController : MonoBehaviourPun
     [PunRPC]
     private void SetPlayersDataRPC(string data)
     {
+        Debug.Log("#RPC# SetPlayersDataRPC + " + data);
+
         PlayersDataRPC playersData = JsonUtility.FromJson<PlayersDataRPC>(data);
 
-        DataController.instance.SetAllPlayersData(playersData.allPlayersData);
+        DataController.instance.SetGameData(playersData.allPlayersData, playersData.gameData);
 
         EventsProvider.OnGameDataRpcRecieved?.Invoke(playersData);
 
 
-        Debug.Log("#RPC# SetPlayersDataRPC");
+     
     }
 
 
@@ -122,14 +124,17 @@ public class MainRPCController : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             DataController.instance.AskToUpdatePlayersData();
+            
+
+            photonView.RPC("SendStartNewLevelRPC", RpcTarget.Others, DataController.instance.GetPlayersDataForRPC());
+
             Master.instance.ChangeGameStage(Enums.GameStage.game);
-            photonView.RPC("SendStartNewLevelRPC", RpcTarget.Others, DataController.instance.GetMyHeroDataForRPC());
         }
     }
     [PunRPC]
     private void SendStartNewLevelRPC(string data)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient == false)
         {
             PlayersDataRPC playersData = JsonUtility.FromJson<PlayersDataRPC>(data);
             DataController.instance.GameData = playersData.gameData;

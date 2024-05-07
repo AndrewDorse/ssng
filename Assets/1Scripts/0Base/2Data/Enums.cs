@@ -10,14 +10,16 @@ public class Enums
         
         game, statistics, rewards, heroUpgrade, 
         
-        camp, inventory, abilities, campHeroInfo 
+        camp, inventory, abilities, campHeroInfo,
+
+        StoryChoice
     
     }
     public enum ServerGameStage { creatingHeroes, gameLevel, camp, finished }
 
     public enum HeroCreationPage { heroClass, race, origin, startItem, overview }
 
-    public enum PopupType { item, ability }
+    public enum PopupType { item, ability, StoryRewards }
 
 
 
@@ -142,21 +144,26 @@ public class Enums
 
 
 
+    // LEVELS STORIES
+
+    public enum Region {  ForestGlade, Dungeon }
+    public enum LevelType { Battle, StoryChoice }
 
 
 
 
+    // REWARDS
+
+    public enum RewardType { ItemToAll, LevelUp, Passive, ItemToLoot}
 
 
 
 
-
-
-
-
-
-
-
+    // TAGS
+    public enum Tag { None, Elf, HighElf, Dwarf, Human, Undead, Orc,
+                Knight, Paladin,
+    
+    }
 
 
 

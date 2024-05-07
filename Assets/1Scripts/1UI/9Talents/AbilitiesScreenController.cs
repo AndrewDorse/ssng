@@ -302,11 +302,11 @@ public class AbilitiesScreenController : ScreenController
 
         if (_activeAbilities)
         {
-            Setup(InfoProvider.instance.GetHeroClass(DataController.instance.LocalPlayerData.heroData.classId).ActiveAbilities);
+            Setup(InfoProvider.instance.GetHeroClass(DataController.LocalPlayerData.heroData.classId).ActiveAbilities);
         }
         else
         {
-            Setup(InfoProvider.instance.GetHeroClass(DataController.instance.LocalPlayerData.heroData.classId).PassiveAbilities);
+            Setup(InfoProvider.instance.GetHeroClass(DataController.LocalPlayerData.heroData.classId).PassiveAbilities);
         }
     }
 

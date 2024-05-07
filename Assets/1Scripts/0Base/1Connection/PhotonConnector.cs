@@ -151,7 +151,7 @@ public class PhotonConnector : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     { 
-		Debug.Log("#pun# OnJoinedRoom");
+		
 
 
 
@@ -159,15 +159,17 @@ public class PhotonConnector : MonoBehaviourPunCallbacks
 		//reconnect
 		if (_isReconnecting)
 		{
+			Debug.Log("#pun# OnJoinedRoom RECONNECT" );
 			MainRPCController.instance.GetPlayersDataFromMaster();
 			EventsProvider.OnGameDataRpcRecieved += OnRecievedGameDataForReconnect;
 		}
 		else // first connect
 		{
+			Debug.Log("#pun# OnJoinedRoom NORMAL");
 			EventsProvider.OnGameDataRpcRecieved -= OnRecievedGameDataForReconnect;
 
-			Master.instance.ChangeGameStage(Enums.GameStage.inRoom);
-			Master.instance.RemoveLoadingScreen();
+			
+			
 
 			EventsProvider.OnJoinRoom?.Invoke();
 
@@ -185,6 +187,9 @@ public class PhotonConnector : MonoBehaviourPunCallbacks
 			{
 				MainRPCController.instance.GetPlayersDataFromMaster();
 			}
+
+
+			Master.instance.ChangeGameStage(Enums.GameStage.inRoom);
 		}
 
 		
@@ -252,13 +257,20 @@ public class PhotonConnector : MonoBehaviourPunCallbacks
 		Enums.GameStage stage = Enums.GameStage.camp;
 
 
-		if(data.gameData.gameStage == Enums.ServerGameStage.gameLevel)
-        {
-			stage = Enums.GameStage.game;
-		}
-		else if(data.gameData.gameStage == Enums.ServerGameStage.camp)
+		if (data.gameData.started)
 		{
-			stage = Enums.GameStage.camp;
+			if (data.gameData.gameStage == Enums.ServerGameStage.gameLevel)
+			{
+				stage = Enums.GameStage.game;
+			}
+			else if (data.gameData.gameStage == Enums.ServerGameStage.camp)
+			{
+				stage = Enums.GameStage.camp;
+			}
+		}
+		else
+        {
+			stage = Enums.GameStage.inRoom;
 		}
 
 

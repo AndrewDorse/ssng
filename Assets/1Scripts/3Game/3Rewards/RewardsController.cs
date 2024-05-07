@@ -22,9 +22,9 @@ public class RewardsController
         // need to know mobId too, for money reward
 
 
-        if(DataController.instance.LocalPlayerData.userId == killerId)
+        if(DataController.LocalPlayerData.userId == killerId)
         {
-            DataController.instance.LocalPlayerData.heroData.Gold += 1;
+            DataController.LocalPlayerData.heroData.Gold += 1;
 
 
         }

@@ -36,15 +36,25 @@ namespace Silversong.Base
 
         public void LaunchGameStage(string levelName)
         {
-            Master.instance.SetLoadingScreen();
+            
 
             (Action, bool) info = SceneChangeCallbacks.GetCallback(_currentStage, Enums.GameStage.game);
 
             Action callback = info.Item1;
+            bool needToChangeScene = info.Item2;
+
+
+            if (needToChangeScene)
+            {
+                Master.instance.SetLoadingScreen();
+                _sceneController.LoadScene(levelName, callback);
+            }
+            else
+            {
+                callback?.Invoke();
+            }
 
             
-
-            _sceneController.LoadScene(levelName, callback);
             _currentStage = Enums.GameStage.game;
             EventsProvider.OnGameStateChange?.Invoke(_currentStage);
         }

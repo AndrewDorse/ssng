@@ -115,6 +115,18 @@ public static class SceneChangeCallbacks
         }
 
 
+        // story choice
+        else if (currentStage == Enums.GameStage.game && nextStage == Enums.GameStage.StoryChoice)  
+        {
+            callback = StoryChoiceCallback;
+            needToChangeScene = false;
+        }
+        else if (currentStage == Enums.GameStage.StoryChoice && nextStage == Enums.GameStage.game)
+        {
+            callback = FromStoryChoiceCallback;
+            needToChangeScene = false;
+        }
+
 
 
 
@@ -136,8 +148,9 @@ public static class SceneChangeCallbacks
 
     private static void LoadedInRoomCallback()
     {
-        Master.instance.OpenScreen(Enums.GameStage.inRoom);
         Master.instance.RemoveLoadingScreen();
+        Master.instance.OpenScreen(Enums.GameStage.inRoom);
+       
     }
 
     private static void LoadedHeroCreationCallback()
@@ -187,5 +200,17 @@ public static class SceneChangeCallbacks
     private static void AbilitiesCallback()
     {
         Master.instance.OpenScreen(Enums.GameStage.abilities);
+    }
+
+
+
+    private static void StoryChoiceCallback()
+    {
+        Master.instance.OpenScreen(Enums.GameStage.StoryChoice);
+    }
+
+    private static void FromStoryChoiceCallback()
+    {
+        Master.instance.OpenScreen(Enums.GameStage.game);
     }
 }

@@ -76,7 +76,7 @@ public class StatsController
 
     private void OnLevelStart()
     {
-        _passiveController.UpdatePassivesInfo(DataController.instance.LocalPlayerData.heroData.PassiveAbilities);
+        _passiveController.UpdatePassivesInfo(DataController.LocalPlayerData.heroData.PassiveAbilities);
     }
 
 

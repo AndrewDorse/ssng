@@ -49,10 +49,10 @@ public class HeroStatsController : MonoBehaviour
 
     private void LevelUp()
     {
-        DataController.instance.LocalPlayerData.heroData.level++;
-        DataController.instance.LocalPlayerData.heroData.TalentPoints++;
+        DataController.LocalPlayerData.heroData.level++;
+        DataController.LocalPlayerData.heroData.TalentPoints++;
 
-        Debug.Log("#LevelUp# " + DataController.instance.LocalPlayerData.heroData.level);
+        Debug.Log("#LevelUp# " + DataController.LocalPlayerData.heroData.level);
     }
 
 

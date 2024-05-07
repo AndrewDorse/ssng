@@ -22,7 +22,7 @@ public class InventoryScreenController : ScreenController
 
         OpenItemsByTier(1);
 
-        SetInventory(DataController.instance.LocalPlayerData.heroData.items);
+        SetInventory(DataController.LocalPlayerData.heroData.items);
 
 
         EventsProvider.OnInventoryItemsChanged += SetInventory;

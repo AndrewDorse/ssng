@@ -12,7 +12,7 @@ public class GameScreenController : ScreenController
         _view.OpenScreen();
 
 
-        SetupAbilityButtons(DataController.instance.LocalPlayerData.heroData.activeTalents);
+        SetupAbilityButtons(DataController.LocalPlayerData.heroData.activeTalents);
     }
 
 

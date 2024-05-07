@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using Silversong.Base;
 using Silversong.Game;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,8 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
     [SerializeField] private List<PlayerData> _allPlayersData;
 
-    public PlayerData LocalPlayerData => GetMyPlayerData();
-
+    public static PlayerData LocalPlayerData => GetMyPlayerData();
+    public static LevelSlot LevelSlot => GetLevelSlot();
 
 
 
@@ -34,6 +35,10 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         EventsProvider.OnOtherPlayerLeftRoom += TryToRemovePlayer;
         EventsProvider.OnHeroDataChanged += OnLocalPlayerHeroDataChanged;
         EventsProvider.OnLeftRoom += ClearPlayersData;
+
+
+        EventsProvider.OnStoryChoiceRpcRecieved += SetStoryChoice;
+
 
         EventsProvider.OnLevelStart += OnLevelStart;
         EventsProvider.OnLevelEnd += OnLevelEnd;
@@ -113,14 +118,16 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
     }
 
-    public void SetAllPlayersData(List<PlayerData > playersData) // for others
+    public void SetGameData(List<PlayerData > playersData, GameData gameData) // for others
     {
         if(PhotonNetwork.IsMasterClient)
         {
             return;
         }
 
-        PlayerData localData = LocalPlayerData;
+        GameData = gameData;
+
+        PlayerData localData = LocalPlayerData; // save as copy??? to check
 
         _allPlayersData = playersData;
 
@@ -128,10 +135,14 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         {
             if (LocalData.UserId == _allPlayersData[i].userId)
             {
-                _allPlayersData[i] = localData;
+                if (localData != null)
+                {
+                    _allPlayersData[i] = localData;
+                }
             }
         }
 
+        
         EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
     }
 
@@ -161,6 +172,11 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
     {
         foreach (PlayerData data in _allPlayersData)
         {
+            if(data == null)
+            {
+                continue;
+            }
+
             if (data.userId == UserId)
             {
                 data.heroData = heroData;
@@ -183,13 +199,30 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
         EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
     }
 
-    public void SetPlayerReady(string UserId, bool value = true)
+    public void SetPlayerReady(string userId, bool value = true)
     {
         foreach (PlayerData data in _allPlayersData)
         {
-            if (data.userId == UserId)
+            if (data.userId == userId)
             {
                 data.ready = value;
+            }
+        }
+
+        EventsProvider.OnPlayersDataChanged?.Invoke(_allPlayersData);
+    }
+
+
+    private void SetStoryChoice(StoryChoiceRPCData data)
+    {
+        string userId = data.UserId;
+        int choiceId = data.ChoiceID;
+
+        foreach (PlayerData players in _allPlayersData)
+        {
+            if (players.userId == userId)
+            {
+                players.StoryChoice = choiceId;
             }
         }
 
@@ -208,11 +241,11 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
 
 
-    private PlayerData GetMyPlayerData()
+    private static PlayerData GetMyPlayerData()
     {
-        foreach (PlayerData data in _allPlayersData)
+        foreach (PlayerData data in DataController.instance._allPlayersData)
         {
-            if (data.userId == LocalData.UserId)
+            if (data.userId == DataController.instance.LocalData.UserId)
             {
                 return data;
             }
@@ -220,6 +253,44 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
         return null;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private static LevelSlot GetLevelSlot()
+    {
+        return DataController.instance.GameData.GameLevels[DataController.instance.GameData.Level - 1];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -394,7 +465,7 @@ public class PlayerData
     public string userId;
     public string nickname;
 
-    public int heroPhotonId;
+    public int StoryChoice;
 
     public bool ready;
     public bool active;
@@ -407,7 +478,7 @@ public class PlayerData
         userId = player.UserId;
         nickname = player.NickName;
 
-        heroPhotonId = -1;
+        StoryChoice = -1;
         ready = false;
         active = true;
         heroData = new HeroData();
@@ -435,6 +506,8 @@ public class GameData
     public Enums.ServerGameStage gameStage = Enums.ServerGameStage.creatingHeroes;
     public string sceneName;
     public int Level = 1;
+
+    public LevelSlot[] GameLevels; 
 
 }
 

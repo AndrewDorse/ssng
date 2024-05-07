@@ -24,7 +24,7 @@ public class LocalHeroAbilityCaster
     {
         // check if its in cooldown??? TODO
 
-        ActiveAbilityDataSlot abilityDataSlot = DataController.instance.LocalPlayerData.heroData.activeTalents[buttonId];
+        ActiveAbilityDataSlot abilityDataSlot = DataController.LocalPlayerData.heroData.activeTalents[buttonId];
 
 
         _abilityToCast = new ActiveAbilitySlot(InfoProvider.instance.GetAbility(abilityDataSlot.Id), abilityDataSlot.Level);

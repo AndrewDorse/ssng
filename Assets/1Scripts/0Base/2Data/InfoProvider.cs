@@ -24,7 +24,7 @@ public class InfoProvider : MonoBehaviour
 
 
 
-
+    [SerializeField] private StoryProviderData _storyProviderData;
 
 
 
@@ -121,7 +121,11 @@ public class InfoProvider : MonoBehaviour
         return _buffProviderData.GetBuff(id);
     }
 
-
+    // 
+    public Story GetStory(int id)
+    {
+        return _storyProviderData.GetStory(id);
+    }
 
 
 

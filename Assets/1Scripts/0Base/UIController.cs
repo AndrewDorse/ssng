@@ -51,10 +51,7 @@ namespace Silversong.UI
             _loadingScreen.SetActive(false);
         }
 
-        public ScreenController GetCurrentScreen()
-        {
-            return _currentScreen;
-        }
+       
 
 
 

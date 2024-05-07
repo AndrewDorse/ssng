@@ -13,6 +13,7 @@ public class Master : MonoBehaviour
     private SilversongConnector _silversongConnector = new SilversongConnector();
     private GameStarter _gameStarter = new GameStarter();
     private AddressablesDownloader _addressablesDownloader = new AddressablesDownloader();
+    private GameLevelsGenerator _storyController = new GameLevelsGenerator();
 
     [SerializeField] private UIController _uIController;
     [SerializeField] private PhotonConnector _photonConnector;
@@ -76,11 +77,6 @@ public class Master : MonoBehaviour
     public void OnPhotonConnection()
     {
         _silversongConnector.OnPhotonConnection();
-    }
-
-    public void OnSilversongConnection()
-    {
-        
     }
 
     public void OnSuccessfullLogin()

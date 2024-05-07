@@ -108,7 +108,9 @@ public static class EventsProvider
 
 
 
-
+    // Story choices
+    public static Action<StoryChoiceRPCData> OnStoryChoiceRpcRecieved;
+    public static Action<int> OnAllPlayersMadeChoice;
 
 
 

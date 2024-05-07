@@ -178,6 +178,7 @@ MonoBehaviour:
   _passiveAbilityProviderData: {fileID: 11400000, guid: 857b088203229234394f21bd9c7e6476,
     type: 2}
   _buffProviderData: {fileID: 11400000, guid: 056475e14e6baa2438c058f3622ff588, type: 2}
+  _storyProviderData: {fileID: 11400000, guid: 44030582d1455fe42894cae512ccee39, type: 2}
   _emptyItemSlot: {fileID: 21300000, guid: b4a5a98a42c45df40a3a56ff3f5f5b83, type: 3}
 --- !u!1 &82150671
 GameObject:
@@ -385,6 +386,7 @@ MonoBehaviour:
     gameStage: 0
     sceneName: 
     Level: 1
+    GameLevels: []
   _allPlayersData: []
 --- !u!1 &486762538
 GameObject:
@@ -1229,6 +1231,8 @@ MonoBehaviour:
     PopupType: 0
   - Popup: {fileID: 4918548801266599407, guid: 8f3c9e251efdc6b438f17d3fc3c5c528, type: 3}
     PopupType: 1
+  - Popup: {fileID: 5455927205422449875, guid: a042ecb242998c64990b94107856672a, type: 3}
+    PopupType: 2
 --- !u!1 &1229721861
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,6 +1273,7 @@ MonoBehaviour:
   - {fileID: 2695027388217790969, guid: e854bbed46768e141ba685dcfd2c639e, type: 3}
   - {fileID: 7153134483432902925, guid: 8ee627ec8880d1540b70e4a14c2a3c1c, type: 3}
   - {fileID: 769100016187984354, guid: 5325e8b948906b54abf6ecba0cad2935, type: 3}
+  - {fileID: 121545394181551086, guid: 3cde10d5c1ba27d4b98f401e0378aa9e, type: 3}
   _transparentLoadingScreen: {fileID: 2060738248}
   _loadingScreen: {fileID: 3829395808611621792}
 --- !u!224 &1229721863

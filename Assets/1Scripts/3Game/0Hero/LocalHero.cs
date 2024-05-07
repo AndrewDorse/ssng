@@ -61,7 +61,7 @@ namespace Silversong.Game
 
         public string GetId()
         {
-            return DataController.instance.LocalPlayerData.userId;
+            return DataController.LocalPlayerData.userId;
         }
     }
 }

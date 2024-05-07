@@ -28,12 +28,14 @@ namespace Silversong.Game
 
         private OtherHeroesController _otherHeroesController = new OtherHeroesController();
         private RewardsController _rewardsController;
+        private StoryChoiceController _storyController;
 
         private void Awake()
         {
             instance = this;
 
             _rewardsController = new RewardsController();
+            _storyController = new StoryChoiceController();
 
             EventsProvider.OnLevelEnd += LevelEnd;
         }
@@ -48,14 +50,16 @@ namespace Silversong.Game
 
             EventsProvider.ThreeTimesPerSecond += SendLocalHeroDataToOthers;
 
-            
 
             _statisticsController = new StatisticsController();
 
 
             if (PhotonNetwork.IsMasterClient)
             {
-                _enemiesController.TEMPStart(); // TODO TEMP!!!!!
+                if(DataController.LevelSlot.LevelType == Enums.LevelType.Battle)
+                {
+                    _enemiesController.CreateEnemies(); 
+                }
             }
             else
             {
@@ -64,6 +68,7 @@ namespace Silversong.Game
 
 
             EventsProvider.OnDeathOfAllEnemies += OnDeathOfAllEnemies;
+            EventsProvider.OnAllPlayersMadeChoice += OnPlayersMadeStoryChoice;
         }
 
         private void LevelEnd()
@@ -74,7 +79,7 @@ namespace Silversong.Game
 
         public EnemiesData GetEnemiesData()
         {
-            return _enemiesController.GetEnemiesData();
+            return _enemiesController.GetCurrentEnemiesDataForRPC();
         }
 
 
@@ -137,14 +142,35 @@ namespace Silversong.Game
             EventsProvider.OnLevelEnd?.Invoke();
             LevelDispose();
             Master.instance.ChangeGameStage(Enums.GameStage.statistics);
-           
+            DataController.instance.GameData.Level++;
         }
+
+        private void OnPlayersMadeStoryChoice(int optionNumber)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                _enemiesController.CreateStoryEnemies(InfoProvider.instance.GetStory(DataController.LevelSlot.StoryId).Options[optionNumber]);
+                Master.instance.ChangeGameStage(Enums.GameStage.game);
+
+                GameRPCController.instance.SendFinalChoiceToOthers(optionNumber);
+                DataController.LocalPlayerData.StoryChoice = -1;
+            }
+            else
+            {
+                Master.instance.ChangeGameStage(Enums.GameStage.game);
+                DataController.LocalPlayerData.StoryChoice = -1;
+            }
+        }
+
+
 
 
         private void LevelDispose()  // on exit level
         {
             EventsProvider.ThreeTimesPerSecond -= SendLocalHeroDataToOthers;
             EventsProvider.OnDeathOfAllEnemies -= OnDeathOfAllEnemies;
+            EventsProvider.OnAllPlayersMadeChoice -= OnPlayersMadeStoryChoice;
+
         }
 
 

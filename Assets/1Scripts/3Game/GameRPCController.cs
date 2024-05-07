@@ -145,7 +145,37 @@ public class GameRPCController : MonoBehaviourPun
         EventsProvider.OnStatisticsRpcRecieved?.Invoke(JsonUtility.FromJson<LevelStatisticsData>(data));
     }
 
-    
+
+
+
+
+
+
+
+    // STORY CHOICES
+
+    public void SendLocalChoiceToOthers(int choiceId)
+    {
+        photonView.RPC("SendLocalChoiceToMasterRPC", RpcTarget.Others, JsonUtility.ToJson( new StoryChoiceRPCData(DataController.instance.LocalData.UserId, choiceId)));
+    }
+    [PunRPC]
+    private void SendLocalChoiceToMasterRPC(string data)
+    {
+        EventsProvider.OnStoryChoiceRpcRecieved?.Invoke(JsonUtility.FromJson<StoryChoiceRPCData>(data));
+    }
+    public void SendFinalChoiceToOthers(int choiceId)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SendFinalChoiceToOthersRPC", RpcTarget.Others, choiceId);
+        }
+    }
+    [PunRPC]
+    private void SendFinalChoiceToOthersRPC(int choiceId)
+    {
+        EventsProvider.OnAllPlayersMadeChoice?.Invoke(choiceId);
+    }
+
 }
 
 
@@ -191,5 +221,20 @@ public class EnemyDeathRPCData
     {
         EnemyId = enemyId;
         KillerId = killerId;
+    }
+}
+
+
+[System.Serializable]
+public class StoryChoiceRPCData
+{
+    public string UserId;
+
+    public int ChoiceID;
+
+    public StoryChoiceRPCData(string userId, int choiceID)
+    {
+        UserId = userId;
+        ChoiceID = choiceID;
     }
 }

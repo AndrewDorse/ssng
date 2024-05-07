@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Silversong.Base;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,8 @@ namespace Silversong.Game
         private EnemiesIncomingDamageController _damageController;
         private List<Enemy> _enemies = new List<Enemy>();
 
-        private int _number;
 
+        private EnemiesCreationHelper _enemiesCreationHelper;
 
 
         [SerializeField] private Enemy _prefab;
@@ -35,6 +36,7 @@ namespace Silversong.Game
             EventsProvider.OnEnemyDeathRpcRecieved += OnEnemyDeath;
 
 
+            _enemiesCreationHelper = new EnemiesCreationHelper();
             _damageController = new EnemiesIncomingDamageController();
         }
 
@@ -76,19 +78,33 @@ namespace Silversong.Game
 
             if (PhotonNetwork.IsMasterClient)
             {
-                GameRPCController.instance.SendEnemiesDataToOthers(GetEnemiesData());
+                GameRPCController.instance.SendEnemiesDataToOthers(GetCurrentEnemiesDataForRPC());
             }
         }
 
 
-        public void TEMPStart()
+
+
+
+        public void CreateEnemies()
         {
-            EnemiesData data = GetInitialEnemiesData();
+            EnemiesData data = _enemiesCreationHelper.GenerateEnemiesData();
 
             SetEnemies(data.data);
         }
 
-        public EnemiesData GetEnemiesData()
+        public void CreateStoryEnemies(StoryOption storyOption)
+        {
+            EnemiesData data = _enemiesCreationHelper.GenerateDataForStoryOption(storyOption);
+
+            SetEnemies(data.data);
+        }
+
+
+
+
+
+        public EnemiesData GetCurrentEnemiesDataForRPC()
         {
             List<EnemyData> data = new List<EnemyData>();
 
@@ -151,29 +167,7 @@ namespace Silversong.Game
 
 
 
-        public EnemiesData GetInitialEnemiesData() // TODO where it should be???
-        {
-            int enemiesAmount = 3;
-            List<EnemyData> list = new List<EnemyData>();
-            _number = 0;
-
-            for (int i = 0; i < enemiesAmount; i++)
-            {
-                EnemyData data = new EnemyData();
-
-                data.mobId = 1;
-                data.position = new Vector3(3, 0, 3 + i);
-                data.targetId = string.Empty;
-                data.id = _number.ToString();
-                _number++;
-
-                list.Add(data);
-            }
-
-
-
-            return new EnemiesData(list);
-        }
+        
 
 
         public void SetEnemies(List<EnemyData> data)
@@ -314,6 +308,88 @@ namespace Silversong.Game
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public class EnemiesCreationHelper
+    {
+        private int _number;
+
+
+
+        public EnemiesCreationHelper()
+        {
+
+        }
+
+
+        public EnemiesData GenerateEnemiesData() 
+        {
+            int enemiesAmount = GetTotalSpawnAmount();
+
+
+            List<EnemyData> list = new List<EnemyData>();
+            _number = 0;
+
+            for (int i = 0; i < enemiesAmount; i++)
+            {
+                EnemyData data = new EnemyData();
+
+                data.mobId = 1;
+                data.position = new Vector3(3, 0, 3 + i); // get spawn points // normal/boss/ambush
+                data.targetId = string.Empty;
+                data.id = _number.ToString();
+                _number++;
+
+                list.Add(data);
+            }
+
+            return new EnemiesData(list);
+        }
+
+        public EnemiesData GenerateDataForStoryOption(StoryOption storyOption)
+        {
+            List<EnemyData> list = new List<EnemyData>();
+
+            _number = 0;
+
+            for (int i = 0; i < storyOption.BattleSlot.mobs.Count; i++)
+            {
+                EnemyData data = new EnemyData();
+
+                data.mobId = storyOption.BattleSlot.mobs[i].Id;
+                data.position = new Vector3(3, 0, 3 + i);
+                data.targetId = string.Empty;
+                data.id = _number.ToString();
+                _number++;
+
+                list.Add(data);
+            }
+
+            return new EnemiesData(list);
+        }
+
+
+
+
+        private int GetTotalSpawnAmount()
+        {
+            return 4;
+        }
+    }
 
 
 }
