@@ -9,7 +9,7 @@ public class Story : ScriptableObject
     public int Id = 0;
     public string Text;
     public Sprite Icon;
-
+    public bool ShowRewards = true;
 
     public StoryOption[] Options;
 
@@ -28,6 +28,8 @@ public class StoryOption
     public RewardSlot[] RewardSlot;
 
     public BattleSlot BattleSlot;
+
+    public string ResultText;
 }
 
 
@@ -35,6 +37,7 @@ public class StoryOption
 public class RewardSlot
 {
     public Enums.RewardType RewardType;
+    public Enums.RewardReciever RecieverType;
     public Enums.Tag RequiredTag;
     public int Value;
 

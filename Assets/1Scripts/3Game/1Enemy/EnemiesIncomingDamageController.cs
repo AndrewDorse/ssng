@@ -14,7 +14,9 @@ namespace Silversong.Game
 
         public EnemiesIncomingDamageController()
         {
-            EventsProvider.OnLevelStart += Subcribe; // Dispose !!!!!! TODO
+            EventsProvider.OnLevelStart += Subcribe;
+            EventsProvider.OnLevelEnd += Dispose;
+
         }
 
         private void Subcribe()
@@ -167,6 +169,9 @@ namespace Silversong.Game
 
             // statisctic !!!!
 
+            
+
+
             foreach (EnemyRecievedDamageData data in allDamagedata.list)
             {
                 float summDamage = 0;
@@ -209,7 +214,12 @@ namespace Silversong.Game
 
         public void Dispose()
         {
+            EventsProvider.OnEnemyRecievedDamage -= DamageRecieved;
             EventsProvider.EverySecond -= TimeTick;
+            EventsProvider.OnEnemyDeathRpcRecieved -= RemoveEnemyData;
+
+
+            EventsProvider.OnAllEnemiesRecievedDamageDataRpc -= DamageInfoFromOtherPlayerRecieved;
         }
 
 

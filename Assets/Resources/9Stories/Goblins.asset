@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Goblins
   m_EditorClassIdentifier: 
   Id: 0
-  Text: You met oack of Goblins in a forest
+  Text: You met pack of Goblins in a forest
   Icon: {fileID: 0}
+  ShowRewards: 1
   Options:
   - Text: Atack them
     Icon: {fileID: 21300000, guid: 1a447b6a155aed34d92385d417907481, type: 3}
     RequiredTag: 0
     RewardSlot:
     - RewardType: 1
+      RecieverType: 2
       RequiredTag: 0
       Value: 1
     BattleSlot:
@@ -30,30 +32,40 @@ MonoBehaviour:
       - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
       - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
       - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
-  - Text: Pass away
-    Icon: {fileID: 0}
-    RequiredTag: 0
-    RewardSlot: []
-    BattleSlot:
-      mobs: []
+      - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
+      - {fileID: 11400000, guid: a5b3459a7e585da4abb9477760f3d4e9, type: 2}
+    ResultText: How fk u dare!
   - Text: 'Run '
     Icon: {fileID: 21300000, guid: d65a25decdc91b04c9d6e2fd77d843a7, type: 3}
     RequiredTag: 0
     RewardSlot: []
     BattleSlot:
       mobs: []
+    ResultText: 
   - Text: Spell Elven Magic
     Icon: {fileID: 21300000, guid: dcf4689593089fd48836653ede282eae, type: 3}
     RequiredTag: 1
     RewardSlot:
     - RewardType: 1
+      RecieverType: 2
       RequiredTag: 0
       Value: 1
-    - RewardType: 1
+    - RewardType: 2
+      RecieverType: 0
       RequiredTag: 1
       Value: 1
-    - RewardType: 2
+    - RewardType: 0
+      RecieverType: 0
       RequiredTag: 1
       Value: 2
+    - RewardType: 0
+      RecieverType: 1
+      RequiredTag: 8
+      Value: 1
+    - RewardType: 1
+      RecieverType: 0
+      RequiredTag: 2
+      Value: 1
     BattleSlot:
       mobs: []
+    ResultText: You successfully used spell and goblins run away in fear

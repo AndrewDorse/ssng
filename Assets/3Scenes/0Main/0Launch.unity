@@ -179,6 +179,8 @@ MonoBehaviour:
     type: 2}
   _buffProviderData: {fileID: 11400000, guid: 056475e14e6baa2438c058f3622ff588, type: 2}
   _storyProviderData: {fileID: 11400000, guid: 44030582d1455fe42894cae512ccee39, type: 2}
+  _rewardsProviderData: {fileID: 11400000, guid: 38e77e34aceef464aa735e040d06d2e6,
+    type: 2}
   _emptyItemSlot: {fileID: 21300000, guid: b4a5a98a42c45df40a3a56ff3f5f5b83, type: 3}
 --- !u!1 &82150671
 GameObject:

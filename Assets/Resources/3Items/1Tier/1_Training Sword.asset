@@ -22,3 +22,8 @@ MonoBehaviour:
   Rarity: 0
   Cost: 3
   Tier: 1
+  Stats:
+  - stat: 25
+    value: 3
+  - stat: 14
+    value: -1

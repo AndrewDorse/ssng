@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Silversong.Game.Scene;
 using Silversong.Game.Statistics;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Silversong.Game
         [SerializeField] private EnemiesController _enemiesController;
         [SerializeField] private GameCameraController _gameCamera;
 
-        private StatisticsController _statisticsController;
+        private LevelStatisticsController _statisticsController;
 
         private OtherHeroesController _otherHeroesController = new OtherHeroesController();
         private RewardsController _rewardsController;
@@ -51,15 +52,12 @@ namespace Silversong.Game
             EventsProvider.ThreeTimesPerSecond += SendLocalHeroDataToOthers;
 
 
-            _statisticsController = new StatisticsController();
+            _statisticsController = new LevelStatisticsController();
 
 
             if (PhotonNetwork.IsMasterClient)
             {
-                if(DataController.LevelSlot.LevelType == Enums.LevelType.Battle)
-                {
-                    _enemiesController.CreateEnemies(); 
-                }
+                
             }
             else
             {
@@ -74,6 +72,7 @@ namespace Silversong.Game
         private void LevelEnd()
         {
             _gameCamera.gameObject.SetActive(false);
+            _statisticsController.Dispose();
         }
 
 
@@ -87,6 +86,21 @@ namespace Silversong.Game
         {
             return _statisticsController.GetLevelStatistics();
         }
+
+        public void SetSpawnPoints(SpawnsInfo  info)
+        {
+            _enemiesController.SetSpawnPoints(info);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                if (DataController.LevelSlot.LevelType == Enums.LevelType.Battle)
+                {
+                    _enemiesController.CreateEnemies();
+                }
+            }
+        }
+
+
 
 
 
@@ -150,18 +164,14 @@ namespace Silversong.Game
             if (PhotonNetwork.IsMasterClient)
             {
                 _enemiesController.CreateStoryEnemies(InfoProvider.instance.GetStory(DataController.LevelSlot.StoryId).Options[optionNumber]);
-                Master.instance.ChangeGameStage(Enums.GameStage.game);
-
+                
                 GameRPCController.instance.SendFinalChoiceToOthers(optionNumber);
-                DataController.LocalPlayerData.StoryChoice = -1;
             }
-            else
-            {
-                Master.instance.ChangeGameStage(Enums.GameStage.game);
-                DataController.LocalPlayerData.StoryChoice = -1;
-            }
+            
+            DataController.LocalPlayerData.StoryChoice = -1;
         }
 
+       
 
 
 

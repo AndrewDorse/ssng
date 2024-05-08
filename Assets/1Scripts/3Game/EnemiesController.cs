@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Silversong.Base;
+using Silversong.Game.Scene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,9 @@ namespace Silversong.Game
 
 
         private EnemiesCreationHelper _enemiesCreationHelper;
+
+        private EnemiesData _levelEnemiesData;
+        private SpawnsInfo _spawnPoints;
 
 
         [SerializeField] private Enemy _prefab;
@@ -40,6 +44,11 @@ namespace Silversong.Game
             _damageController = new EnemiesIncomingDamageController();
         }
 
+        public void SetSpawnPoints(SpawnsInfo info)
+        {
+            _spawnPoints = info;
+        }
+
 
         private void ApplyBuffDataFromRpc(BuffDataRPCSlot data)
         {
@@ -52,10 +61,6 @@ namespace Silversong.Game
                 enemy.GetStatsController().ApplyBuff(buffSlot);
 
             }
-
-
-
-
         }
 
 
@@ -75,7 +80,6 @@ namespace Silversong.Game
 
         private void UpdateEnemiesInfoForOthers()
         {
-
             if (PhotonNetwork.IsMasterClient)
             {
                 GameRPCController.instance.SendEnemiesDataToOthers(GetCurrentEnemiesDataForRPC());
@@ -86,19 +90,60 @@ namespace Silversong.Game
 
 
 
+
+
+
+
         public void CreateEnemies()
         {
-            EnemiesData data = _enemiesCreationHelper.GenerateEnemiesData();
+            _levelEnemiesData = _enemiesCreationHelper.GenerateEnemiesDataForLevel(_spawnPoints);
 
-            SetEnemies(data.data);
+
+            SpawnWave();
         }
+
+
+        private void SpawnWave()
+        {
+            if(_levelEnemiesData.data.Count == 0)
+            {
+                return;
+            }
+
+            List<EnemyData> currentSpawn = new List<EnemyData>();
+
+            int oneWaveSpawn = 5;
+
+            for (int i = 0; i < oneWaveSpawn; i++)
+            {
+                if (_levelEnemiesData.data.Count == 0)
+                {
+                    break;
+                }
+
+                currentSpawn.Add(_levelEnemiesData.data[0]);
+
+                _levelEnemiesData.data.Remove(_levelEnemiesData.data[0]);
+            }
+
+            SetEnemies(currentSpawn);
+        }
+
+
 
         public void CreateStoryEnemies(StoryOption storyOption)
         {
-            EnemiesData data = _enemiesCreationHelper.GenerateDataForStoryOption(storyOption);
+            _levelEnemiesData = _enemiesCreationHelper.GenerateDataForStoryOption(storyOption, _spawnPoints);
 
-            SetEnemies(data.data);
+            SpawnWave();
         }
+
+
+
+
+
+
+
 
 
 
@@ -124,6 +169,15 @@ namespace Silversong.Game
                 {
                     enemy.DeathFromMaster();
                     _enemies.Remove(enemy);
+
+                    if (MainRPCController.instance.IsMaster)
+                    {
+                        if (_enemies.Count <= 5) // next wave? what amount suppose to be??
+                        {
+                            SpawnWave();
+                        }
+                    }
+
 
                     if(_enemies.Count == 0) // also check line to create mobs -  TODO !!!!!
                     {
@@ -336,7 +390,7 @@ namespace Silversong.Game
         }
 
 
-        public EnemiesData GenerateEnemiesData() 
+        public EnemiesData GenerateEnemiesDataForLevel(SpawnsInfo spawnData) 
         {
             int enemiesAmount = GetTotalSpawnAmount();
 
@@ -344,12 +398,16 @@ namespace Silversong.Game
             List<EnemyData> list = new List<EnemyData>();
             _number = 0;
 
+
+
+
+
             for (int i = 0; i < enemiesAmount; i++)
             {
                 EnemyData data = new EnemyData();
 
                 data.mobId = 1;
-                data.position = new Vector3(3, 0, 3 + i); // get spawn points // normal/boss/ambush
+                data.position = GetPosition(i, spawnData); // get spawn points // normal/boss/ambush
                 data.targetId = string.Empty;
                 data.id = _number.ToString();
                 _number++;
@@ -360,7 +418,7 @@ namespace Silversong.Game
             return new EnemiesData(list);
         }
 
-        public EnemiesData GenerateDataForStoryOption(StoryOption storyOption)
+        public EnemiesData GenerateDataForStoryOption(StoryOption storyOption, SpawnsInfo spawnData)
         {
             List<EnemyData> list = new List<EnemyData>();
 
@@ -371,7 +429,7 @@ namespace Silversong.Game
                 EnemyData data = new EnemyData();
 
                 data.mobId = storyOption.BattleSlot.mobs[i].Id;
-                data.position = new Vector3(3, 0, 3 + i);
+                data.position = GetPosition(i, spawnData);
                 data.targetId = string.Empty;
                 data.id = _number.ToString();
                 _number++;
@@ -384,10 +442,33 @@ namespace Silversong.Game
 
 
 
+        private Vector3 GetPosition(int number, SpawnsInfo info)
+        {
+            if(number <= 6)
+            {
+                return RandomPointInBounds(info._mainSpawnColliders[Random.Range(0, info._mainSpawnColliders.Length)].bounds);
+            }
+            else
+            {
+                return RandomPointInBounds(info._ambushSpawnColliders[Random.Range(0, info._ambushSpawnColliders.Length)].bounds);
+            }
+
+        }
+
+        private Vector3 RandomPointInBounds(Bounds bounds)
+        {
+            return new Vector3(
+                Random.Range(bounds.min.x, bounds.max.x),
+                Random.Range(0, 0),
+                Random.Range(bounds.min.z, bounds.max.z)
+            );
+        }
+
+
 
         private int GetTotalSpawnAmount()
         {
-            return 4;
+            return Mathf.CeilToInt(DataController.instance.GameData.Level * 1.5f + 4);
         }
     }
 

@@ -12,8 +12,7 @@ public class InventoryItem : BaseItem
     public int Cost = 10;
     public int Tier = 1;
 
-    // stats 
-    // passives
+    public List<StatSlot> Stats;
 
 
 

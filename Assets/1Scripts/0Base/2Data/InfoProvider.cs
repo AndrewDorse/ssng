@@ -27,10 +27,13 @@ public class InfoProvider : MonoBehaviour
     [SerializeField] private StoryProviderData _storyProviderData;
 
 
-
+    [SerializeField] private RewardsProviderData _rewardsProviderData;
 
 
     [SerializeField] private Sprite _emptyItemSlot;
+
+
+    public RewardsProviderData RewardsProviderData => _rewardsProviderData;
 
 
 

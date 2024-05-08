@@ -35,7 +35,7 @@ namespace Silversong.UI
             {
                 if (i < rewards.Length)
                 {
-                    _rewardsSlots[i].Setup(rewards[i]);
+                    _rewardsSlots[i].Setup(rewards[i], Click);
                 }
                 else
                 {
@@ -45,6 +45,22 @@ namespace Silversong.UI
 
 
             }
+        }
+
+        private void Click(RewardSlot rewardSlot)
+        {
+
+            if(rewardSlot.RewardType == Enums.RewardType.Item)
+            {
+                ItemPopup itemPopup = Master.instance.GetPopup(Enums.PopupType.item) as ItemPopup;
+
+                InventoryItem item = InfoProvider.instance.GetItem(rewardSlot.Value);
+
+
+                itemPopup.Setup(item, Enums.UniversalButtonType.backButton, null, 0);
+            }
+
+
         }
 
 

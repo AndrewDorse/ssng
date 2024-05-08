@@ -91,6 +91,7 @@ public static class EventsProvider
     // inventory
 
     public static Action<List<ItemSlot>> OnInventoryItemsChanged;
+    public static Action<ItemSlot> OnInventoryItemsAdded;
 
 
 

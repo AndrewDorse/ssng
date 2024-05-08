@@ -799,6 +799,59 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 297387176}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &349503085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 349503086}
+  - component: {fileID: 349503087}
+  m_Layer: 0
+  m_Name: AmbushSpawn1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &349503086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349503085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.68, y: 0, z: -1.58}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 185994369083179489}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &349503087
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349503085}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &352860312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1386,22 +1439,22 @@ PrefabInstance:
     - target: {fileID: 6890416301494735889, guid: bb6ee6ec5ebac404c8f9fdcedb224566,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 1
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 7603455308734374159, guid: bb6ee6ec5ebac404c8f9fdcedb224566,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 1
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 8418284754786982105, guid: bb6ee6ec5ebac404c8f9fdcedb224566,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 1
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 9046079028445416415, guid: bb6ee6ec5ebac404c8f9fdcedb224566,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 1
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7997,6 +8050,7 @@ Transform:
   m_Children:
   - {fileID: 9023952253585262104}
   - {fileID: 1513344907171881298}
+  - {fileID: 349503086}
   m_Father: {fileID: 696791005907676886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &341741213171272739
@@ -9092,7 +9146,7 @@ Transform:
   m_GameObject: {fileID: 5250008814456614582}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.67, y: 0, z: 17.32}
+  m_LocalPosition: {x: 7.5, y: 0, z: 18.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9211,6 +9265,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 185994369083179489}
+  - component: {fileID: 1779638039750944493}
   m_Layer: 0
   m_Name: Spawns
   m_TagString: Untagged
@@ -9218,6 +9273,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1779638039750944493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779638039750944492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50253be9a01542e4c8b9aee1ad620f74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnInfo:
+    _mainSpawnColliders:
+    - {fileID: 9023952253585262105}
+    _ambushSpawnColliders:
+    - {fileID: 349503087}
+    _bossSpawnCollider: {fileID: 5250008814456614583}
 --- !u!1 &2002763608677240466
 GameObject:
   m_ObjectHideFlags: 0
@@ -9701,9 +9774,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9023952253585262104}
-  - component: {fileID: 6181233278867515277}
+  - component: {fileID: 9023952253585262105}
   m_Layer: 0
-  m_Name: Spawn1
+  m_Name: MainSpawn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11455,14 +11528,35 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1513344907171881298}
-  - component: {fileID: 6157318314191387760}
+  - component: {fileID: 5250008814456614583}
   m_Layer: 0
-  m_Name: Spawn2Boss
+  m_Name: BossSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &5250008814456614583
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5250008814456614582}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &5255847315391241696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12013,32 +12107,6 @@ Transform:
   - {fileID: 961124961}
   m_Father: {fileID: 4593077909354844194}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6157318314191387760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5250008814456614582}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99e1243e1ccdafb4d95c15dc1aecd9e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossSpawn: 1
---- !u!114 &6181233278867515277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3039492286005854426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99e1243e1ccdafb4d95c15dc1aecd9e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossSpawn: 0
 --- !u!1001 &6364879740785143862
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13360,12 +13428,33 @@ Transform:
   m_GameObject: {fileID: 3039492286005854426}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61, y: 0, z: 8.68}
+  m_LocalPosition: {x: 2.79, y: 0, z: 10.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 185994369083179489}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &9023952253585262105
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039492286005854426}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.4690266, y: 1, z: 6.3930664}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

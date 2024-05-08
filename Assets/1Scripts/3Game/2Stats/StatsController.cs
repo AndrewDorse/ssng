@@ -215,17 +215,34 @@ public class StatsController
 
 
 
-    // learned passives
+    
     private void SubcribeLocalHero()
     {
         EventsProvider.OnPassiveAbilityLearnt += AddPassiveAbilityStats;
+        EventsProvider.OnInventoryItemsAdded += AddItemStats;
+
+
+
     }
 
+
+
+    // learned passives
     private void AddPassiveAbilityStats(PassiveAbility passive)
     {
         if(passive.Type == Enums.PassiveTypes.stats)
         {
             ApplyStatList(passive.LevelInfo[0].Stats, Enums.StatType.passive);
+        }
+    }
+
+    private void AddItemStats(ItemSlot itemSlot)
+    {
+        InventoryItem item = InfoProvider.instance.GetItem(itemSlot.Id);
+
+        if (item.Stats.Count > 0)
+        {
+            ApplyStatList(item.Stats, Enums.StatType.item);
         }
     }
 

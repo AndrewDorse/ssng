@@ -315,9 +315,12 @@ public  class DataController : MonoBehaviour // remove mono TODO ??
 
     public void AddItem(int id)
     {
-        LocalPlayerData.heroData.items.Add(new ItemSlot(id));
+        ItemSlot itemSlot = new ItemSlot(id);
+
+        LocalPlayerData.heroData.items.Add(itemSlot);
         EventsProvider.OnHeroDataChanged?.Invoke(LocalPlayerData.heroData);
         EventsProvider.OnInventoryItemsChanged?.Invoke(LocalPlayerData.heroData.items);
+        EventsProvider.OnInventoryItemsAdded?.Invoke(itemSlot);
     }
 
 

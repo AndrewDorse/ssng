@@ -2161,6 +2161,12 @@ MonoBehaviour:
     stage: 4
   - camera: {fileID: 984744825}
     stage: 5
+  - camera: {fileID: 811808458}
+    stage: 10
+  - camera: {fileID: 984744825}
+    stage: 11
+  - camera: {fileID: 916818400}
+    stage: 12
 --- !u!1001 &1669524315
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4516726eb0d371f44a198c3c72fd6b15, type: 3}
   m_Name: 2_Blunt Axe
   m_EditorClassIdentifier: 
-  Id: 0
+  Id: 2
   Icon: {fileID: 21300000, guid: ca316331740b43f4f867a61d9034b698, type: 3}
   Name: Blunt Axe
   Description: This enigmatic item pulses with latent power, its true potential shrouded
@@ -21,3 +21,9 @@ MonoBehaviour:
     a journey, where destiny awaits and legends are forged anew.
   Rarity: 0
   Cost: 10
+  Tier: 1
+  Stats:
+  - stat: 25
+    value: 1
+  - stat: 4
+    value: 2

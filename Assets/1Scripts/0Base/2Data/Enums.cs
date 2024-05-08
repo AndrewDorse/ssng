@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class Enums 
 {
 
@@ -154,9 +150,9 @@ public class Enums
 
     // REWARDS
 
-    public enum RewardType { ItemToAll, LevelUp, Passive, ItemToLoot}
+    public enum RewardType { Item, LevelUp, Passive, Gold, TalentPoint}
 
-
+    public enum RewardReciever { PlayerWithTag, PlayerWithoutTag, All}
 
 
     // TAGS

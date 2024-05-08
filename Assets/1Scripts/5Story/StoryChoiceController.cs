@@ -84,7 +84,7 @@ public class StoryChoiceController
 
         DataController.LocalPlayerData.StoryChoice = -1;
 
-        Debug.Log("#OnAllPlayerMadeAChoice# " + results[0] + results[1] + results[2] + results[3] + "  " + result + "  most voted anount" + optionNumbers.Count);
+        Debug.Log("#OnAllPlayerMadeAChoice# " + results[0] + results[1] + results[2] + results[3] + results[4] + "  " + result + "  most voted anount" + optionNumbers.Count);
     }
 
     private static void GetMostVotedOptions(int[] results, List<int> optionNumbers)// finding most voted option / options

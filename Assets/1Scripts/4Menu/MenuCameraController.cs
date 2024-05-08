@@ -6,6 +6,8 @@ public class MenuCameraController : MonoBehaviour
 {
     [SerializeField] private CameraStageSlot[] _cameraSlots;
 
+    private GameObject _currentCamera;
+
 
     private void Start()
     {
@@ -14,15 +16,18 @@ public class MenuCameraController : MonoBehaviour
 
     private void MoveCamera(Enums.GameStage stage)
     {
-        foreach(CameraStageSlot slot in _cameraSlots)
+        if(_currentCamera)
         {
-            if(slot.stage != stage)
+            _currentCamera.SetActive(false);
+        }
+
+        foreach (CameraStageSlot slot in _cameraSlots)
+        {
+            if(slot.stage == stage)
             {
-                slot.camera.SetActive(false);
-            }
-            else
-            {
-                slot.camera.SetActive(true);
+                _currentCamera = slot.camera; 
+                _currentCamera.SetActive(true);
+                break;
             }
         }
     }
